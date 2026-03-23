@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATO AI Training Program</title>
+<style>
+  :root {
+    --primary: #022c25;
+    --accent: #10b98d;
+    --accent-light: #e6f7f2;
+    --success: #10b98d;
+    --success-light: #d1fae5;
+    --text: #1f2937;
+    --text-light: #6b7280;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --border: #e5e7eb;
+    --radius: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* ── Navigation ── */
+  nav {
+    background: var(--primary);
+    padding: 16px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.3px;
+  }
+  .logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a {
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: #fff; }
+
+  /* ── Hero ── */
+  .hero {
+    background: linear-gradient(135deg, var(--primary) 0%, #044036 100%);
+    color: #fff;
+    padding: 80px 24px 64px;
+    text-align: center;
+  }
+  .hero h1 {
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+  .hero p {
+    font-size: 18px;
+    color: rgba(255,255,255,0.75);
+    max-width: 600px;
+    margin: 0 auto 32px;
+  }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    margin-top: 40px;
+  }
+  .hero-stat {
+    text-align: center;
+  }
+  .hero-stat .number {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--accent);
+    display: block;
+  }
+  .hero-stat .label {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  /* ── Section Container ── */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ── Progress Bar ── */
+  .progress-section {
+    padding: 48px 24px 0;
+  }
+  .progress-bar-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 32px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    border: 1px solid var(--border);
+  }
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .progress-header h3 {
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .progress-pct {
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .progress-track {
+    background: #f1f5f9;
+    border-radius: 8px;
+    height: 10px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    background: linear-gradient(90deg, var(--accent), #0d7a66);
+    height: 100%;
+    border-radius: 8px;
+    transition: width 0.5s ease;
+  }
+  .progress-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
+  }
+  .progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+  }
+  .step-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-light);
+    transition: all 0.2s;
+  }
+  .step-dot.active {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .step-dot.completed {
+    border-color: var(--success);
+    background: var(--success);
+    color: #fff;
+  }
+  .step-label {
+    font-size: 11px;
+    color: var(--text-light);
+    font-weight: 500;
+    text-align: center;
+    max-width: 80px;
+  }
+
+  /* ── Sessions Grid ── */
+  .sessions-section {
+    padding: 56px 24px;
+  }
+  .section-title {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+  .section-subtitle {
+    color: var(--text-light);
+    font-size: 16px;
+    margin-bottom: 40px;
+  }
+
+  .session-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .session-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .session-card-header {
+    display: flex;
+    align-items: stretch;
+    cursor: pointer;
+  }
+  .session-number {
+    width: 72px;
+    min-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 800;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .session-number.s1 { background: #022c25; }
+  .session-number.s2 { background: #053d33; }
+  .session-number.s3 { background: #0a5c4e; }
+  .session-number.s4 { background: #0d7a66; }
+  .session-number.s5 { background: #10b98d; }
+
+  .session-info {
+    flex: 1;
+    padding: 24px;
+  }
+  .session-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .badge {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .badge-live { background: #fef3c7; color: #92400e; }
+  .badge-self { background: var(--accent-light); color: #065f46; }
+  .badge-capstone { background: var(--success-light); color: #065f46; }
+  .session-duration {
+    font-size: 12px;
+    color: var(--text-light);
+  }
+  .session-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    letter-spacing: -0.3px;
+  }
+  .session-desc {
+    font-size: 14px;
+    color: var(--text-light);
+    line-height: 1.5;
+  }
+  .session-toggle {
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    color: var(--text-light);
+    font-size: 20px;
+    transition: transform 0.2s;
+  }
+  .session-toggle.open { transform: rotate(180deg); }
+
+  .session-details {
+    display: none;
+    padding: 0 24px 24px;
+    margin-left: 72px;
+    border-top: 1px solid var(--border);
+  }
+  .session-details.open { display: block; }
+  .session-details h4 {
+    font-size: 14px;
+    font-weight: 700;
+    margin: 20px 0 10px;
+    color: var(--text);
+  }
+  .session-details ul {
+    margin: 0;
+    padding-left: 20px;
+  }
+  .session-details li {
+    font-size: 14px;
+    color: var(--text-light);
+    margin-bottom: 6px;
+    line-height: 1.5;
+  }
+  .exercise-box {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+  }
+  .exercise-box .exercise-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .exercise-box p {
+    font-size: 13px;
+    color: var(--text-light);
+    line-height: 1.5;
+  }
+
+  /* ── Metrics Section ── */
+  .metrics-section {
+    padding: 0 24px 56px;
+  }
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+  .metric-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    text-align: center;
+  }
+  .metric-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+  }
+  .metric-value {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--primary);
+    letter-spacing: -1px;
+  }
+  .metric-label {
+    font-size: 13px;
+    color: var(--text-light);
+    margin-top: 4px;
+  }
+
+  /* ── What You'll Learn ── */
+  .outcomes-section {
+    padding: 0 24px 56px;
+  }
+  .outcomes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  .outcome-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+  }
+  .outcome-icon {
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+  .outcome-card h4 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .outcome-card p {
+    font-size: 14px;
+    color: var(--text-light);
+    line-height: 1.5;
+  }
+
+  /* ── CTA Section ── */
+  .cta-section {
+    background: linear-gradient(135deg, var(--primary) 0%, #044036 100%);
+    padding: 64px 24px;
+    text-align: center;
+    color: #fff;
+  }
+  .cta-section h2 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 12px;
+  }
+  .cta-section p {
+    color: rgba(255,255,255,0.7);
+    font-size: 16px;
+    max-width: 500px;
+    margin: 0 auto 28px;
+  }
+  .cta-btn {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    padding: 14px 36px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  .cta-btn:hover { background: #0d9b77; }
+
+  /* ── Footer ── */
+  footer {
+    padding: 32px 24px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-light);
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 28px; }
+    .hero-stats { gap: 24px; flex-wrap: wrap; }
+    .hero-stat .number { font-size: 28px; }
+    .session-number { width: 56px; font-size: 20px; }
+    .session-details { margin-left: 56px; }
+    .nav-links { display: none; }
+    .progress-steps { gap: 4px; }
+    .step-label { font-size: 10px; max-width: 60px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo">A Team Overseas <span>AI Training</span></div>
+    <div class="nav-links">
+      <a href="#sessions">Sessions</a>
+      <a href="#outcomes">Outcomes</a>
+      <a href="#metrics">Metrics</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <h1>AI Training Program</h1>
+  <p>Every ATO team member arrives AI-ready from day one. This program makes sure of it &mdash; from foundations to competency verification.</p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <span class="number">5</span>
+      <span class="label">Sessions</span>
+    </div>
+    <div class="hero-stat">
+      <span class="number">4-5</span>
+      <span class="label">Hours Total</span>
+    </div>
+    <div class="hero-stat">
+      <span class="number">1</span>
+      <span class="label">Week</span>
+    </div>
+  </div>
+</div>
+
+<!-- Progress Tracker -->
+<div class="progress-section">
+  <div class="progress-bar-container">
+    <div class="progress-header">
+      <h3>Your Progress</h3>
+      <span class="progress-pct" id="progressPct">0% Complete</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+    <div class="progress-steps">
+      <div class="progress-step" onclick="toggleStep(0)">
+        <div class="step-dot" id="dot0">1</div>
+        <span class="step-label">Kickoff</span>
+      </div>
+      <div class="progress-step" onclick="toggleStep(1)">
+        <div class="step-dot" id="dot1">2</div>
+        <span class="step-label">Prompting</span>
+      </div>
+      <div class="progress-step" onclick="toggleStep(2)">
+        <div class="step-dot" id="dot2">3</div>
+        <span class="step-label">Free Tools</span>
+      </div>
+      <div class="progress-step" onclick="toggleStep(3)">
+        <div class="step-dot" id="dot3">4</div>
+        <span class="step-label">Real Tasks</span>
+      </div>
+      <div class="progress-step" onclick="toggleStep(4)">
+        <div class="step-dot" id="dot4">5</div>
+        <span class="step-label">Capstone</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- What You'll Learn -->
+<div class="outcomes-section container" id="outcomes" style="padding-top:56px">
+  <h2 class="section-title">What "AI-Ready" Means at ATO</h2>
+  <p class="section-subtitle">By the end of this program, you'll be able to:</p>
+  <div class="outcomes-grid">
+    <div class="outcome-card">
+      <div class="outcome-icon">&#x1f9e0;</div>
+      <h4>Think With AI</h4>
+      <p>Understand what AI can and can't do well. Know when to reach for it and when to do something manually.</p>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-icon">&#x270d;&#xfe0f;</div>
+      <h4>Write Effective Prompts</h4>
+      <p>Give AI clear instructions with role, context, task, format, and constraints. Get useful results consistently.</p>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-icon">&#x1f4bc;</div>
+      <h4>Apply AI to Real Work</h4>
+      <p>Use AI for email triage, research, task planning, drafting, data work, and editing &mdash; the tasks that fill your day.</p>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-icon">&#x1f512;</div>
+      <h4>Handle Privacy &amp; Clients</h4>
+      <p>Know what data is safe for AI tools, follow confidentiality rules, and communicate transparently with clients.</p>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-icon">&#x1f504;</div>
+      <h4>Learn Independently</h4>
+      <p>Pick up new AI tools as they evolve. You're not learning one app &mdash; you're building a skill.</p>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-icon">&#x2705;</div>
+      <h4>Prove It</h4>
+      <p>Complete a capstone deliverable that demonstrates real AI competency. Not a quiz &mdash; actual work product.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Sessions -->
+<div class="sessions-section container" id="sessions">
+  <h2 class="section-title">The 5 Sessions</h2>
+  <p class="section-subtitle">1 live kickoff + 4 self-paced modules. Complete all 5 to earn your competency verification.</p>
+
+  <!-- Session 1 -->
+  <div class="session-card">
+    <div class="session-card-header" onclick="toggleSession(this)">
+      <div class="session-number s1">01</div>
+      <div class="session-info">
+        <div class="session-meta">
+          <span class="badge badge-live">Live Session</span>
+          <span class="session-duration">45&ndash;60 minutes</span>
+        </div>
+        <div class="session-title">Kickoff: The AI Landscape &amp; Expectations</div>
+        <div class="session-desc">What AI tools exist, what they're good at, what they struggle with, and what ATO expects from you.</div>
+      </div>
+      <div class="session-toggle">&#x25BE;</div>
+    </div>
+    <div class="session-details">
+      <h4>Part 1: The AI Landscape</h4>
+      <ul>
+        <li>Overview of current AI tools: ChatGPT, Claude, Gemini, Copilot</li>
+        <li>What they're good at: drafting, summarizing, brainstorming, organizing, research</li>
+        <li>What they struggle with: math, real-time info, nuanced judgment, perfect accuracy</li>
+        <li>The "smart intern" mental model &mdash; useful and fast, but always needs review</li>
+        <li>Live demo: same prompt in two different tools to see how outputs vary</li>
+      </ul>
+      <h4>Part 2: Expectations &amp; Goals</h4>
+      <ul>
+        <li>What "AI-first" means at ATO: reach for AI as a starting point, not an afterthought</li>
+        <li>This is part of what clients are paying for &mdash; they expect AI-ready team members</li>
+        <li>Timeline and deadlines for self-paced sessions</li>
+        <li>Introduction to the competency check: what it is and what "passing" looks like</li>
+      </ul>
+      <h4>Part 3: Privacy &amp; Client Guidelines</h4>
+      <ul>
+        <li>What data is safe to put into AI tools (and what isn't)</li>
+        <li>Client confidentiality rules &mdash; never paste passwords, financial data, or sensitive info</li>
+        <li>When and how to tell a client you used AI</li>
+        <li>What to do if a client asks you not to use AI</li>
+      </ul>
+      <div class="exercise-box">
+        <div class="exercise-label">Output</div>
+        <p>No deliverable. This session is about alignment, information, and Q&amp;A.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Session 2 -->
+  <div class="session-card">
+    <div class="session-card-header" onclick="toggleSession(this)">
+      <div class="session-number s2">02</div>
+      <div class="session-info">
+        <div class="session-meta">
+          <span class="badge badge-self">Self-Paced</span>
+          <span class="session-duration">~45 minutes</span>
+        </div>
+        <div class="session-title">Prompting Foundations</div>
+        <div class="session-desc">Go from "I typed something and got a weird answer" to "I can consistently get useful results."</div>
+      </div>
+      <div class="session-toggle">&#x25BE;</div>
+    </div>
+    <div class="session-details">
+      <h4>What You'll Learn</h4>
+      <ul>
+        <li>The anatomy of a good prompt: role, context, task, format, constraints</li>
+        <li>Before/after examples using real ATO work scenarios</li>
+        <li>The "be specific" principle &mdash; vague in = vague out</li>
+        <li>How to iterate when the first result isn't right</li>
+        <li>Giving feedback mid-conversation: "make it shorter," "more formal," "try a different angle"</li>
+      </ul>
+      <h4>Why This Matters at ATO</h4>
+      <ul>
+        <li>Good prompting is the difference between AI saving you 30 minutes or wasting 30 minutes</li>
+        <li>Clients will see the quality of your AI-assisted output &mdash; it needs to be client-ready</li>
+      </ul>
+      <div class="exercise-box">
+        <div class="exercise-label">Practice Exercise</div>
+        <p>Take 3 common work tasks and write prompts for each. Run them in any free AI tool (ChatGPT, Claude, Gemini). Save the outputs.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Session 3 -->
+  <div class="session-card">
+    <div class="session-card-header" onclick="toggleSession(this)">
+      <div class="session-number s3">03</div>
+      <div class="session-info">
+        <div class="session-meta">
+          <span class="badge badge-self">Self-Paced</span>
+          <span class="session-duration">~30 minutes</span>
+        </div>
+        <div class="session-title">Getting Comfortable With Free Tools</div>
+        <div class="session-desc">Build the AI habit using what's freely available &mdash; before paid tools are provisioned.</div>
+      </div>
+      <div class="session-toggle">&#x25BE;</div>
+    </div>
+    <div class="session-details">
+      <h4>What You'll Do</h4>
+      <ul>
+        <li>Try at least two free AI tools (ChatGPT free, Claude free, Gemini)</li>
+        <li>Run the same prompt in both and compare results &mdash; notice where they differ</li>
+        <li>Explore use cases: draft an email, summarize an article, plan a task list, brainstorm ideas</li>
+        <li>Start forming a preference &mdash; which tool feels most natural? (No wrong answer.)</li>
+        <li>Learn each tool's basics: starting a new chat, uploading a file, adjusting settings</li>
+      </ul>
+      <div class="exercise-box">
+        <div class="exercise-label">Practice Exercise</div>
+        <p>Pick a real task from your day (or make one up) and complete it using two different AI tools. Write a short note on which tool you preferred and why.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Session 4 -->
+  <div class="session-card">
+    <div class="session-card-header" onclick="toggleSession(this)">
+      <div class="session-number s4">04</div>
+      <div class="session-info">
+        <div class="session-meta">
+          <span class="badge badge-self">Self-Paced</span>
+          <span class="session-duration">~1 hour</span>
+        </div>
+        <div class="session-title">AI for Real Work Tasks</div>
+        <div class="session-desc">Apply AI to the actual work you'll be doing &mdash; email, research, planning, drafting, data, and editing.</div>
+      </div>
+      <div class="session-toggle">&#x25BE;</div>
+    </div>
+    <div class="session-details">
+      <h4>Core Work Areas</h4>
+      <ul>
+        <li><strong>Email triage &amp; drafting:</strong> sorting by urgency, writing replies, summarizing threads</li>
+        <li><strong>Research &amp; summarization:</strong> pulling together info on a topic, condensing long documents</li>
+        <li><strong>Task planning:</strong> turning a messy list into an organized plan with priorities</li>
+        <li><strong>Communication drafting:</strong> writing updates, messages, or briefs in a professional tone</li>
+        <li><strong>Light data work:</strong> organizing info, pulling key points from a spreadsheet or list</li>
+        <li><strong>Editing &amp; improving:</strong> using AI to review and improve your own writing</li>
+        <li><strong>Client communication &amp; AI transparency:</strong> three-scenario framework for working with clients</li>
+      </ul>
+      <div class="exercise-box">
+        <div class="exercise-label">Practice Exercise</div>
+        <p>Complete at least 3 of the tasks above using AI. Save the outputs. Be ready to talk about what worked and what you had to fix.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Session 5 -->
+  <div class="session-card">
+    <div class="session-card-header" onclick="toggleSession(this)">
+      <div class="session-number s5">05</div>
+      <div class="session-info">
+        <div class="session-meta">
+          <span class="badge badge-capstone">Capstone</span>
+          <span class="session-duration">Output required</span>
+        </div>
+        <div class="session-title">Putting It Together &mdash; Competency Check</div>
+        <div class="session-desc">Everything from Sessions 1&ndash;4 comes together. Your output here is what gets reviewed.</div>
+      </div>
+      <div class="session-toggle">&#x25BE;</div>
+    </div>
+    <div class="session-details">
+      <h4>What to Prepare</h4>
+      <ul>
+        <li>Review what you've learned: prompting, tool familiarity, real task application</li>
+        <li>Think about how AI fits into the kind of work you'll be doing at ATO</li>
+        <li>Consider: what are the 3&ndash;5 tasks where AI saves you the most time?</li>
+      </ul>
+      <h4>Final Output (Required)</h4>
+      <ul>
+        <li><strong>How you'd use AI in your role:</strong> Pick 3&ndash;5 specific tasks and show the prompts you'd use</li>
+        <li><strong>A sample deliverable:</strong> One real piece of work you completed using AI during training</li>
+        <li><strong>What you learned:</strong> What surprised you, what didn't work, what you'd want to learn more about</li>
+        <li><strong>Client communication reflection:</strong> How you'd handle AI transparency with a client</li>
+      </ul>
+      <h4>What "Passing" Looks Like</h4>
+      <ul>
+        <li>Shows you can use AI for real work (not generic copy-paste)</li>
+        <li>Tasks are relevant to your role with prompts that make sense</li>
+        <li>The sample deliverable is something a client would find useful</li>
+        <li>You can articulate what worked and what you'd improve</li>
+        <li>Privacy guidelines are followed throughout</li>
+      </ul>
+      <div class="exercise-box">
+        <div class="exercise-label">Deliverable</div>
+        <p>A short document or presentation (1&ndash;2 pages max) covering all three areas above. This gets shared during a brief review with your point person.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Metrics -->
+<div class="metrics-section container" id="metrics">
+  <h2 class="section-title">Program Metrics</h2>
+  <p class="section-subtitle">How we measure whether the program is working.</p>
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-icon">&#x1f3af;</div>
+      <div class="metric-value">&mdash;</div>
+      <div class="metric-label">First-attempt pass rate</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">&#x1f4c8;</div>
+      <div class="metric-value">&mdash;</div>
+      <div class="metric-label">Weekly AI adoption rate</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">&#x23f1;&#xfe0f;</div>
+      <div class="metric-value">&mdash;</div>
+      <div class="metric-label">Avg. hours saved / week</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">&#x2b50;</div>
+      <div class="metric-value">&mdash;</div>
+      <div class="metric-label">Client satisfaction score</div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2>Ready to Get Started?</h2>
+  <p>Complete all 5 sessions within your training week. Your point person will walk you through the kickoff and get you set up.</p>
+  <a href="#sessions" class="cta-btn">View Sessions</a>
+</div>
+
+<!-- Footer -->
+<footer>
+  <p>A Team Overseas &middot; AI Training Program &middot; 2026</p>
+</footer>
+
+<script>
+  // Progress tracker
+  var completed = [false, false, false, false, false];
+
+  function toggleStep(idx) {
+    completed[idx] = !completed[idx];
+    updateProgress();
+  }
+
+  function updateProgress() {
+    var count = completed.filter(function(c) { return c; }).length;
+    var pct = Math.round((count / 5) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressPct').textContent = pct + '% Complete';
+
+    for (var i = 0; i < 5; i++) {
+      var dot = document.getElementById('dot' + i);
+      dot.className = 'step-dot';
+      if (completed[i]) {
+        dot.className = 'step-dot completed';
+        dot.innerHTML = '&#x2713;';
+      } else {
+        dot.className = 'step-dot';
+        dot.innerHTML = (i + 1);
+      }
+    }
+  }
+
+  // Session accordion
+  function toggleSession(header) {
+    var card = header.parentElement;
+    var details = card.querySelector('.session-details');
+    var toggle = card.querySelector('.session-toggle');
+    var isOpen = details.classList.contains('open');
+
+    // Close all
+    document.querySelectorAll('.session-details').forEach(function(d) { d.classList.remove('open'); });
+    document.querySelectorAll('.session-toggle').forEach(function(t) { t.classList.remove('open'); });
+
+    // Open clicked (if it was closed)
+    if (!isOpen) {
+      details.classList.add('open');
+      toggle.classList.add('open');
+    }
+  }
+</script>
+
+</body>
+</html>

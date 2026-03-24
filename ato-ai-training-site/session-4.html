@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session 4: AI for Real Work Tasks — ATO AI Training</title>
+    <link rel="stylesheet" href="./styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-text">A Team Overseas</span>
+                <span class="logo-accent">AI Training</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="./index.html#overview">Program Overview</a></li>
+                <li><a href="./index.html#sessions">Sessions</a></li>
+                <li><a href="./index.html#faq">FAQ</a></li>
+                <li><a href="./index.html#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="session-hero fade-in">
+        <div class="hero-container">
+            <nav class="breadcrumb">
+                <a href="./index.html">Home</a>
+                <span>/</span>
+                <span>Session 4</span>
+            </nav>
+            <div class="hero-content">
+                <h1>Session 4: AI for Real Work Tasks</h1>
+                <p class="hero-subtitle">Put AI to work on the tasks you actually do every day</p>
+                <div class="session-meta">
+                    <span class="badge badge-self-paced">Self-Paced</span>
+                    <span class="session-duration">~1 hour</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="content-container">
+        <!-- Prerequisites -->
+        <section class="session-section fade-in">
+            <h3>Prerequisites</h3>
+            <p>You should have completed Sessions 2 and 3 before starting this session.</p>
+        </section>
+
+        <!-- Why This Matters at ATO -->
+        <section class="session-section fade-in">
+            <div class="callout-box fade-in">
+                <div class="callout-box-content">
+                    <h4>Why This Matters at ATO</h4>
+                    <p>ATO EAs don't just "use AI"—they deliver faster turnaround, higher quality, more proactive support. From the Future EA narrative: "The best EAs don't work harder. They work smarter. They use every tool, including AI, to multiply their impact and free up mental energy for the work that requires real judgment."</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- What This Session Covers -->
+        <section class="session-section fade-in">
+            <h2>What This Session Covers</h2>
+            <p>This is where everything becomes practical. You'll learn 7 core work areas where AI transforms how fast and well you work. You're expected to <strong>complete at least 3 of the 6 practice sections below</strong>. Section 7 is <strong>required reading</strong>—it covers transparency and when <em>not</em> to use AI.</p>
+            <p style="margin-top: var(--spacing-lg); font-style: italic; color: var(--color-text-light);">Estimated time: 45–60 minutes to complete 3 sections + required reading.</p>
+        </section>
+
+        <!-- Section 1: Email Triage and Drafting -->
+        <section class="session-section fade-in">
+            <h2>Section 1: Email Triage and Drafting</h2>
+            <h3>The Scenario</h3>
+            <p>Your client logs in and sees 25 unread emails. They need them triaged, prioritized, and replied to. Without AI, you spend 2–3 hours on this. With AI, you spend 20 minutes.</p>
+
+            <h3>How AI Helps</h3>
+            <ul>
+                <li><strong>Triage:</strong> Identify urgent vs. routine emails</li>
+                <li><strong>Summarize:</strong> Extract action items from email threads</li>
+                <li><strong>Draft replies:</strong> Write professional responses in seconds</li>
+            </ul>
+
+            <h3>Full Walkthrough</h3>
+            <p><strong>Step 1: Triage Prompt</strong></p>
+            <p>Copy these 10 sample emails and use this prompt:</p>
+
+            <div class="exercise-box fade-in">
+                <h4>Sample Emails</h4>
+                <div class="exercise-steps">
+                    <div class="exercise-step">
+                        <strong>From:</strong> sarah@clientcompany.com<br>
+                        <strong>Subject:</strong> Q2 Budget Review - Need your thoughts<br>
+                        <strong>Body:</strong> "Hi, we're reviewing Q2 budget allocations next week. Would love your input on the comms team spend. Let me know your availability?"
+                    </div>
+                    <div class="exercise-step">
+                        <strong>From:</strong> feedback@newsletter.com<br>
+                        <strong>Subject:</strong> Newsletter platform update<br>
+                        <strong>Body:</strong> "Your monthly newsletter stats are in. Open rate: 32%. This is your account summary."
+                    </div>
+                    <div class="exercise-step">
+                        <strong>From:</strong> john@vendor.com<br>
+                        <strong>Subject:</strong> URGENT: Contract expiring today<br>
+                        <strong>Body:</strong> "Your contract renews today. Action required within 2 hours or service will pause. Reply ASAP."
+                    </div>
+                    <div class="exercise-step">
+                        <strong>From:</strong> team@company.com<br>
+                        <strong>Subject:</strong> Team lunch Thursday?<br>
+                        <strong>Body:</strong> "A few of us are grabbing lunch Thursday at noon. Want in?"
+                    </div>
+                    <div class="exercise-step">
+                        <strong>From:</strong> news@industry.com<br>
+                        <strong>Subject:</strong> Industry Report: 2026 Trends<br>
+                        <strong>Body:</strong> "Read our latest report on industry trends. [link]"
+                    </div>
+                    <div class="exercise-step">
+                        <strong>From:</strong> partner@company.com<br>
+                        <strong>Subject:</strong> Follow-up: Partnership opportunity<br>
+                        <strong>Body:</strong> "Following up on our call yesterday. Still interested in exploring this? I have some new data to share."
+                    </div>
+                    <div class="exercise-step">
+                        <strong>From:</strong> hr@company.com<br>
+                        <strong>Subject:</strong> Open enrollment - Important deadline<br>
+                        <strong>Body:</strong> "Health insurance open enrollment closes Friday. Make your selections by EOD Friday or you'll be auto-enrolled in last year's plan."
+                    </div>
+                    <div class="exercise-step">
+                        <strong>From:</strong> admin@platform.com<br>
+                        <strong>Subject:</strong> Password reset request<br>
+                        <strong>Body:</strong> "We received a password reset request for your account. If this wasn't you, ignore this email."
+                    </div>
+                    <div class="exercise-step">
+                        <strong>From:</strong> client@bigaccount.com<br>
+                        <strong>Subject:</strong> Next week's meeting - ready to discuss proposal<br>
+                        <strong>Body:</strong> "Looking forward to Wednesday's 2pm call. We're excited about the proposal. See you then!"
+                    </div>
+                    <div class="exercise-step">
+                        <strong>From:</strong> invoicing@vendor.com<br>
+                        <strong>Subject:</strong> Invoice #8734 - 30 days overdue<br>
+                        <strong>Body:</strong> "This invoice is now 30 days past due. We need immediate payment to avoid service suspension."
+                    </div>
+                </div>
+            </div>
+
+            <div class="exercise-box fade-in">
+                <h4>Triage Prompt</h4>
+                <p><strong>Prompt to use:</strong></p>
+                <p style="background: rgba(0,0,0,0.05); padding: var(--spacing-md); border-radius: var(--rounded-md); font-family: monospace; font-size: var(--text-sm); overflow-x: auto;">
+                    "I have 10 emails. Please triage them into 3 categories: (1) URGENT - requires action within 24 hours, (2) HIGH - important but not today, (3) ROUTINE - FYI or can wait. For each email, list the category, subject, and one-line action item. Format as a table."
+                </p>
+                <p style="margin-top: var(--spacing-md);"><strong>What to expect:</strong> Claude will organize the emails by priority, give you a clear action list, and call out the two critical ones (contract and invoice).</p>
+            </div>
+
+            <p><strong>Step 2: Draft Reply Prompt</strong></p>
+            <p>Take one email (the partnership follow-up from john@company.com) and use this prompt:</p>
+
+            <div class="exercise-box fade-in">
+                <h4>Draft Reply Prompt</h4>
+                <p><strong>Prompt to use:</strong></p>
+                <p style="background: rgba(0,0,0,0.05); padding: var(--spacing-md); border-radius: var(--rounded-md); font-family: monospace; font-size: var(--text-sm); overflow-x: auto;">
+                    "Draft a professional reply to this email from a partner about a partnership opportunity. Tone: warm, professional, interested but measured. I want to ask for a call next week to discuss the new data they mentioned. Keep it to 3–4 sentences."
+                </p>
+                <p style="margin-top: var(--spacing-md);"><strong>What to expect:</strong> A polished 3–4 sentence reply you can copy and send (or edit slightly).</p>
+            </div>
+
+            <h3>Try It Yourself</h3>
+            <p>Pick a work email from your own inbox. Paste the full email into Claude and use the triage or draft prompt above. Spend 5 minutes. Note: What did AI get right? What did you have to change?</p>
+        </section>
+
+        <!-- Section 2: Research and Summarization -->
+        <section class="session-section fade-in">
+            <h2>Section 2: Research and Summarization</h2>
+            <h3>The Scenario</h3>
+            <p>Your client asks: "Can you look into Slack vs. Teams for us? I want to know the pros and cons so we can decide." Without AI, that's 1–2 hours of research. With AI, it's 10 minutes.</p>
+
+            <h3>How AI Helps</h3>
+            <ul>
+                <li><strong>Rapid research:</strong> Summarize existing knowledge on a topic</li>
+                <li><strong>Structured comparison:</strong> Side-by-side pros and cons</li>
+                <li><strong>Actionable insights:</strong> "Given our use case, here's what matters most"</li>
+            </ul>
+
+            <h3>Full Walkthrough</h3>
+            <p><strong>Step 1: Research Prompt</strong></p>
+
+            <div class="exercise-box fade-in">
+                <h4>Research Prompt</h4>
+                <p><strong>Prompt to use:</strong></p>
+                <p style="background: rgba(0,0,0,0.05); padding: var(--spacing-md); border-radius: var(--rounded-md); font-family: monospace; font-size: var(--text-sm); overflow-x: auto;">
+                    "Compare Slack and Microsoft Teams. For each, give me: (1) key features, (2) pricing models, (3) best for what type of organization, (4) main limitations. Format as a table or side-by-side comparison."
+                </p>
+            </div>
+
+            <p><strong>Step 2: Summarization Prompt (using AI output from Step 1)</strong></p>
+            <p>Take the comparison Claude gave you and add this follow-up:</p>
+
+            <div class="exercise-box fade-in">
+                <h4>Summarization Prompt</h4>
+                <p><strong>Prompt to use:</strong></p>
+                <p style="background: rgba(0,0,0,0.05); padding: var(--spacing-md); border-radius: var(--rounded-md); font-family: monospace; font-size: var(--text-sm); overflow-x: auto;">
+                    "Based on this comparison, write a 1-page executive summary for a decision-maker. Include: (1) key takeaways, (2) recommendation for a small marketing team (under 20 people), (3) implementation considerations."
+                </p>
+            </div>
+
+            <h3>Try It Yourself</h3>
+            <p>Pick a "research" question your clients often ask. (Examples: HubSpot vs. Salesforce, Notion vs. Asana, Cloud storage options.) Use the research and summarization prompts above. Estimated time: 10 minutes. Ask yourself: Is this faster than Googling? Better structured?</p>
+        </section>
+
+        <!-- Section 3: Task Planning and Prioritization -->
+        <section class="session-section fade-in">
+            <h2>Section 3: Task Planning and Prioritization</h2>
+            <h3>The Scenario</h3>
+            <p>Your client has a messy task list. Everything feels urgent. They don't know what to do Monday morning. You could spend 1 hour organizing. Or you could spend 5 minutes with AI.</p>
+
+            <h3>How AI Helps</h3>
+            <ul>
+                <li><strong>Prioritization:</strong> Sort tasks by impact and urgency</li>
+                <li><strong>Planning:</strong> Create a realistic weekly or daily plan</li>
+                <li><strong>Breaking down:</strong> Turn vague tasks into actionable steps</li>
+            </ul>
+
+            <h3>Full Walkthrough</h3>
+            <p><strong>Planning Prompt with Sample Task List</strong></p>
+
+            <div class="exercise-box fade-in">
+                <h4>Sample Task List</h4>
+                <ol style="margin-top: var(--spacing-md);">
+                    <li>Update social media (Instagram, LinkedIn, Twitter)</li>
+                    <li>Reply to 15 emails from potential clients</li>
+                    <li>Prepare for board meeting on Friday (needs slides, handouts)</li>
+                    <li>Research new CRM options</li>
+                    <li>Fix broken website link on homepage</li>
+                    <li>Schedule team meeting for next month</li>
+                    <li>Write monthly newsletter (draft due Wednesday)</li>
+                    <li>Call 3 past clients for feedback</li>
+                    <li>Update company handbook section on remote work</li>
+                    <li>Create Q2 budget proposal</li>
+                </ol>
+            </div>
+
+            <div class="exercise-box fade-in">
+                <h4>Planning Prompt</h4>
+                <p><strong>Prompt to use:</strong></p>
+                <p style="background: rgba(0,0,0,0.05); padding: var(--spacing-md); border-radius: var(--rounded-md); font-family: monospace; font-size: var(--text-sm); overflow-x: auto;">
+                    "I have a messy task list for the week. Help me prioritize and create a realistic plan. For each task, tell me: (1) priority level (critical, high, medium, low), (2) recommended day/time, (3) estimated time, (4) whether it can be delegated. Then give me a recommended Monday–Friday plan that's actually doable."
+                </p>
+            </div>
+
+            <h3>Try It Yourself</h3>
+            <p>Use your own task list (or your client's if you have one). Paste it into Claude using the prompt above. Spend 5 minutes. Notice: Does this match your intuition about what should come first? What would you reorder?</p>
+        </section>
+
+        <!-- Section 4: Communication Drafting -->
+        <section class="session-section fade-in">
+            <h2>Section 4: Communication Drafting</h2>
+            <h3>The Scenario</h3>
+            <p>You need to write a message—a Slack update, a meeting summary, a status email—and you want it to be clear, professional, and perfectly toned. You could spend 20 minutes writing and rewriting. Or you could spend 3 minutes with AI.</p>
+
+            <h3>How AI Helps</h3>
+            <ul>
+                <li><strong>Tone matching:</strong> Match your brand voice or formality level</li>
+                <li><strong>Structure:</strong> Organize complex information clearly</li>
+                <li><strong>Multiple versions:</strong> Generate options and pick the best</li>
+            </ul>
+
+            <h3>Full Walkthrough</h3>
+            <p><strong>Step 1: Slack Update Prompt</strong></p>
+
+            <div class="exercise-box fade-in">
+                <h4>Slack Update Prompt</h4>
+                <p><strong>Prompt to use:</strong></p>
+                <p style="background: rgba(0,0,0,0.05); padding: var(--spacing-md); border-radius: var(--rounded-md); font-family: monospace; font-size: var(--text-sm); overflow-x: auto;">
+                    "I need to send a Slack update to my team about a project delay. Key info: (1) the website redesign will launch next Friday instead of this Friday, (2) this doesn't affect the launch event, (3) I need feedback on the new design by Wednesday. Tone: casual, confident, no drama. Keep it under 150 words."
+                </p>
+            </div>
+
+            <p><strong>Step 2: Meeting Summary Prompt</strong></p>
+
+            <div class="exercise-box fade-in">
+                <h4>Meeting Summary Prompt</h4>
+                <p><strong>Prompt to use:</strong></p>
+                <p style="background: rgba(0,0,0,0.05); padding: var(--spacing-md); border-radius: var(--rounded-md); font-family: monospace; font-size: var(--text-sm); overflow-x: auto;">
+                    "Write a professional meeting summary email. Meeting was about Q2 goals and budget. Attendees: me, Sarah (CEO), Jen (CFO), Marcus (product). Key decisions: (1) Q2 focus is customer retention, (2) budget stays at $500k, (3) we'll hire 1 contractor. Next meeting: May 1st. Tone: formal, professional."
+                </p>
+            </div>
+
+            <h3>Try It Yourself</h3>
+            <p>Think of a message you wrote recently (email, Slack, etc.). Rewrite it using the prompts above. Estimated time: 5 minutes. Did AI match your style? What would you edit?</p>
+        </section>
+
+        <!-- Section 5: Light Data Work -->
+        <section class="session-section fade-in">
+            <h2>Section 5: Light Data Work</h2>
+            <h3>The Scenario</h3>
+            <p>Your client sends you: a customer feedback spreadsheet, a messy contact list, a PDF with financial data. You could spend 30 minutes manually extracting info. Or you could use AI to do it in 5 minutes.</p>
+
+            <h3>How AI Helps</h3>
+            <ul>
+                <li><strong>Extracting:</strong> Pull specific info from unstructured data</li>
+                <li><strong>Reorganizing:</strong> Reformat data into a clean list or table</li>
+                <li><strong>Pattern spotting:</strong> "What do these data points have in common?"</li>
+            </ul>
+
+            <h3>Full Walkthrough</h3>
+            <p><strong>Step 1: Data Extraction Prompt</strong></p>
+
+            <div class="exercise-box fade-in">
+                <h4>Sample Customer Feedback</h4>
+                <p style="font-style: italic; color: var(--color-text-light);">Paste this sample data into Claude:</p>
+                <p style="background: rgba(0,0,0,0.05); padding: var(--spacing-md); border-radius: var(--rounded-md); font-family: monospace; font-size: var(--text-sm); line-height: 1.8;">
+                    Customer: Alex Johnson | Date: Mar 15 | Feedback: "Love the product, but the onboarding is confusing. Took me 45 minutes to set up my first account."<br><br>
+                    Customer: Sarah Chen | Date: Mar 18 | Feedback: "Great support team. Needed help on Tuesday and they responded in 30 minutes."<br><br>
+                    Customer: Michael Peters | Date: Mar 20 | Feedback: "Considering switching. Your competitor has better mobile support and integrations."<br><br>
+                    Customer: Lisa Rodriguez | Date: Mar 21 | Feedback: "Price is high but the quality justifies it. Worth every penny."
+                </p>
+            </div>
+
+            <div class="exercise-box fade-in">
+                <h4>Data Extraction Prompt</h4>
+                <p><strong>Prompt to use:</strong></p>
+                <p style="background: rgba(0,0,0,0.05); padding: var(--spacing-md); border-radius: var(--rounded-md); font-family: monospace; font-size: var(--text-sm); overflow-x: auto;">
+                    "Extract the key insight from each customer's feedback. For each: (1) customer name, (2) sentiment (positive, negative, neutral), (3) main issue or praise, (4) action item (if any). Format as a table."
+                </p>
+            </div>
+
+            <p><strong>Step 2: Data Reorganization Prompt</strong></p>
+
+            <div class="exercise-box fade-in">
+                <h4>Data Reorganization Prompt</h4>
+                <p><strong>Prompt to use:</strong></p>
+                <p style="background: rgba(0,0,0,0.05); padding: var(--spacing-md); border-radius: var(--rounded-md); font-family: monospace; font-size: var(--text-sm); overflow-x: auto;">
+                    "I have a messy list of contacts. Reorganize into a clean CSV-style list with columns: First Name | Last Name | Email | Company | Role | Phone. If info is missing, leave blank. Here's the messy list: [paste list]"
+                </p>
+            </div>
+
+            <h3>Try It Yourself</h3>
+            <p>Find a spreadsheet or data list you've been meaning to clean up. Use the extraction or reorganization prompt above. Estimated time: 5 minutes. Note: What did AI get right? What did you have to fix manually?</p>
+        </section>
+
+        <!-- Section 6: Editing and Improving -->
+        <section class="session-section fade-in">
+            <h2>Section 6: Editing and Improving</h2>
+            <h3>The Scenario</h3>
+            <p>You wrote something—an email, a report, a social post—and it feels off. Too wordy. Wrong tone. Not clear enough. You could spend 30 minutes rewriting it yourself. Or you could ask AI to fix it in 2 minutes.</p>
+
+            <h3>How AI Helps</h3>
+            <ul>
+                <li><strong>Proofreading:</strong> Catch typos and grammar issues</li>
+                <li><strong>Tone adjustment:</strong> Make it more casual, formal, empathetic, etc.</li>
+                <li><strong>Clarity:</strong> Simplify and tighten the message</li>
+                <li><strong>Conciseness:</strong> Cut the fluff without losing meaning</li>
+            </ul>
+
+            <h3>Full Walkthrough</h3>
+            <p><strong>Editing Prompt with Sample Email</strong></p>
+
+            <div class="exercise-box fade-in">
+                <h4>Sample Verbose Email</h4>
+                <p style="background: rgba(0,0,0,0.05); padding: var(--spacing-md); border-radius: var(--rounded-md); font-size: var(--text-sm); line-height: 1.8;">
+                    Subject: Request for Approval on Q2 Budget Allocation<br><br>
+                    Dear Leadership Team,<br><br>
+                    I hope this email finds you in good health and good spirits. I am writing to you today to request your careful consideration and approval regarding the allocation of our company budget for the second quarter of this year. Over the past few weeks, my team and I have been working diligently to analyze our expenditures and project our needs for the upcoming months. After extensive discussion and deliberation, we have determined that an increase in our marketing budget would be beneficial to our overall organizational goals and objectives. Specifically, we would like to propose an increase of approximately 15% above our current allocation, which would bring our total quarterly spend to a figure of $250,000. This increase would enable us to pursue new initiatives in digital marketing and social media engagement, which we believe will yield positive results for our brand awareness and customer acquisition efforts. We would greatly appreciate your thoughtful review of this proposal at your earliest convenience. Please let us know if you have any questions or require any additional information.<br><br>
+                    Best regards,<br>
+                    The Marketing Team
+                </p>
+            </div>
+
+            <div class="exercise-box fade-in">
+                <h4>Editing Prompt</h4>
+                <p><strong>Prompt to use:</strong></p>
+                <p style="background: rgba(0,0,0,0.05); padding: var(--spacing-md); border-radius: var(--rounded-md); font-family: monospace; font-size: var(--text-sm); overflow-x: auto;">
+                    "Edit this email for clarity and conciseness. Remove jargon and corporate fluff. Make it direct and professional but warm. Keep it to 4–5 sentences plus a closing."
+                </p>
+            </div>
+
+            <h3>Try It Yourself</h3>
+            <p>Find an email or document you wrote. Paste it into Claude with any of these requests: "Make this more concise," "Change the tone to [casual/formal/empathetic]," "Simplify this for a non-expert," "Proofread and improve clarity." Estimated time: 5 minutes. What surprised you about the edits?</p>
+        </section>
+
+        <!-- Section 7: Working With Clients + AI Transparency -->
+        <section class="session-section fade-in">
+            <h2>Section 7: Working With Clients + AI Transparency (REQUIRED READING)</h2>
+            <p style="font-weight: 600; color: var(--color-primary);">This is not a practice exercise. It is essential knowledge and required before moving to Session 5.</p>
+
+            <h3>ATO's Position on AI Transparency</h3>
+            <div class="callout-box fade-in">
+                <div class="callout-box-content">
+                    <p><strong>Core principle:</strong> Use AI to deliver better work faster. Be honest about how you work. Clients trust you. Respect that trust.</p>
+                </div>
+            </div>
+
+            <h3>Three Scenarios</h3>
+
+            <h4>Scenario 1: Proactive Transparency (Recommended)</h4>
+            <p>You're doing work for a client and you used AI to make it faster and better. Best practice: mention it upfront, frame it as a positive.</p>
+            <p><strong>Script provided:</strong></p>
+            <div style="background: rgba(0,0,0,0.05); padding: var(--spacing-md); border-radius: var(--rounded-md); border-left: 4px solid var(--color-accent); margin: var(--spacing-md) 0;">
+                <p style="margin: 0;">"I used AI to draft this initial version, then I reviewed and refined it for your specific situation. The result is faster turnaround without cutting corners. Here's what I changed/added based on your context..."</p>
+            </div>
+
+            <h4>Scenario 2: Reactive Disclosure (If Asked)</h4>
+            <p>Your client asks: "Did you use AI?" Be honest. Frame it positively.</p>
+            <p><strong>Framing scripts:</strong></p>
+            <div style="background: rgba(0,0,0,0.05); padding: var(--spacing-md); border-radius: var(--rounded-md); border-left: 4px solid var(--color-accent); margin: var(--spacing-md) 0;">
+                <p style="margin: 0;"><em>"Yes, I used AI to speed up the drafting, then I spent time refining it for your specific situation. Here's what I added/changed..."</em></p>
+                <p style="margin-top: var(--spacing-md); margin-bottom: 0;"><em>"I used AI for the initial research and structure, but all the content that's specific to your business is from my analysis and our past conversations."</em></p>
+            </div>
+
+            <h4>Scenario 3: Sensitive Work (Don't Use AI)</h4>
+            <p>Sometimes your client explicitly says no to AI. Or the work is highly sensitive. In these cases: don't use AI, period.</p>
+            <ul style="margin-top: var(--spacing-md);">
+                <li><strong>Client says "no AI":</strong> Respect it. No exceptions, no hidden use.</li>
+                <li><strong>Sensitive data:</strong> Legal documents, confidential financial data, proprietary code—if it's sensitive, do it without AI.</li>
+                <li><strong>Gut check:</strong> If you're wondering whether to use AI, you probably shouldn't. When in doubt, ask the client or ask ATO's leadership.</li>
+            </ul>
+
+            <h3>What NOT to Put Into AI Tools (Quick Refresher)</h3>
+            <ul>
+                <li>Passwords, API keys, or authentication credentials</li>
+                <li>Confidential client data (financial records, personal information, proprietary documents)</li>
+                <li>Legal agreements without client approval</li>
+                <li>Anything marked "confidential" or "internal only"</li>
+                <li>PII (personally identifiable information) without de-identifying it first</li>
+                <li>Real names/details in sensitive scenarios (use placeholders instead)</li>
+            </ul>
+
+            <h3>Why This Matters for You</h3>
+            <p>Your reputation is your most valuable asset. Clients trust you. They hire ATO because they trust us. Using AI responsibly—and being transparent about it—strengthens that trust. Hiding it or misusing it destroys it. The companies that will win in the AI era aren't the ones using AI secretly. They're the ones using it openly, responsibly, and in service of their clients.</p>
+
+            <h3>Reference Documentation</h3>
+            <p>For more on ATO's policies around AI use and client communication, see:</p>
+            <ul>
+                <li>ATO Data Privacy & Security Handbook (confidential, in your onboarding folder)</li>
+                <li>Client Communication Best Practices (internal wiki)</li>
+                <li>AI Transparency Policy (internal—ask your team lead for the link)</li>
+            </ul>
+        </section>
+
+        <!-- Practice Exercise Requirement -->
+        <section class="session-section fade-in">
+            <h2>Practice Exercise (Required)</h2>
+            <div class="exercise-box fade-in">
+                <h4>Your Task</h4>
+                <p><strong>Complete at least 3 of the 6 practice sections above.</strong> For each section you complete:</p>
+                <ol style="margin-top: var(--spacing-md);">
+                    <li>Run the prompt exactly as shown (or adapt it to real work)</li>
+                    <li>Save the AI output</li>
+                    <li>Save your prompt (copy-paste the full prompt)</li>
+                    <li>Note: Did you edit the AI output? If so, what and why?</li>
+                </ol>
+                <p style="margin-top: var(--spacing-lg); font-style: italic; color: var(--color-text-light);">Tip: Do this during your normal workday. Practice on real tasks where possible. The goal is to build confidence and find where AI fits into your workflow.</p>
+            </div>
+        </section>
+
+        <!-- Key Takeaways -->
+        <section class="session-section fade-in">
+            <h2>Key Takeaways</h2>
+            <ol>
+                <li><strong>AI is fastest at triage, drafting, and research.</strong> Use it there first.</li>
+                <li><strong>Always review and edit.</strong> AI gives you a draft, not a finished product.</li>
+                <li><strong>Be transparent with clients.</strong> "I used AI to draft this, then I refined it" is honest and professional.</li>
+                <li><strong>Don't use AI for sensitive data.</strong> Passwords, confidential info, PII—these stay off the AI tools.</li>
+                <li><strong>Build the habit now.</strong> The work you do this week becomes the systems you use for the next 5 years.</li>
+            </ol>
+        </section>
+
+        <!-- Session Navigation -->
+        <section class="session-nav fade-in">
+            <div class="nav-prev">
+                <a href="session-3.html" class="btn btn-secondary">← Session 3</a>
+            </div>
+            <div class="nav-next">
+                <a href="session-5.html" class="btn btn-primary">Next: Session 5 →</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2026 A Team Overseas. All rights reserved.</p>
+            <p>Questions? <a href="mailto:training@ato.example.com">Contact us</a></p>
+        </div>
+    </footer>
+
+    <script src="./script.js"></script>
+</body>
+</html>

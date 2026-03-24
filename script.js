@@ -22,18 +22,18 @@ let progressData = [
  */
 async function initializeAuth() {
   try {
-    if (!window.supabase) {
+    if (!window.supabaseClient) {
       console.warn('Supabase not initialized - auth will not persist');
       updateAuthUI(null);
       return;
     }
 
-    const { data: { session } } = await window.supabase.auth.getSession();
+    const { data: { session } } = await window.supabaseClient.auth.getSession();
     currentUser = session?.user || null;
     updateAuthUI(currentUser);
 
     // Listen for auth state changes
-    const { data: { subscription } } = window.supabase.auth.onAuthStateChange(
+    const { data: { subscription } } = window.supabaseClient.auth.onAuthStateChange(
       (event, session) => {
         currentUser = session?.user || null;
         updateAuthUI(currentUser);
@@ -62,7 +62,7 @@ async function initializeAuth() {
  */
 async function sendMagicLink(email) {
   try {
-    if (!window.supabase) {
+    if (!window.supabaseClient) {
       showAuthError('Supabase not available');
       return false;
     }
@@ -72,7 +72,7 @@ async function sendMagicLink(email) {
       return false;
     }
 
-    const { error } = await window.supabase.auth.signInWithOtp({
+    const { error } = await window.supabaseClient.auth.signInWithOtp({
       email: email,
       options: {
         emailRedirectTo: window.location.origin + window.location.pathname
@@ -98,14 +98,14 @@ async function sendMagicLink(email) {
  */
 async function signOut() {
   try {
-    if (!window.supabase) {
+    if (!window.supabaseClient) {
       currentUser = null;
       updateAuthUI(null);
       window.location.href = 'index.html';
       return;
     }
 
-    const { error } = await window.supabase.auth.signOut();
+    const { error } = await window.supabaseClient.auth.signOut();
     if (error) throw error;
 
     currentUser = null;
@@ -234,12 +234,12 @@ function isIndexPage() {
  */
 async function loadProgress() {
   try {
-    if (!window.supabase || !currentUser) {
+    if (!window.supabaseClient || !currentUser) {
       console.warn('Cannot load progress: supabase or user not available');
       return progressData;
     }
 
-    const { data, error } = await window.supabase
+    const { data, error } = await window.supabaseClient
       .from('session_progress')
       .select('*')
       .eq('user_id', currentUser.id)
@@ -285,7 +285,7 @@ async function toggleStep(sessionNumber) {
       return;
     }
 
-    if (!window.supabase) {
+    if (!window.supabaseClient) {
       // Just toggle in memory
       const item = progressData[sessionNumber - 1];
       if (item) {
@@ -302,7 +302,7 @@ async function toggleStep(sessionNumber) {
     const timestamp = newStatus === 'completed' ? new Date().toISOString() : null;
 
     // Update database
-    const { error } = await window.supabase
+    const { error } = await window.supabaseClient
       .from('session_progress')
       .update({
         status: newStatus,
@@ -315,7 +315,7 @@ async function toggleStep(sessionNumber) {
     if (error) {
       // If no row exists, insert it
       if (error.code === 'PGRST116') {
-        const { error: insertError } = await window.supabase
+        const { error: insertError } = await window.supabaseClient
           .from('session_progress')
           .insert({
             user_id: currentUser.id,
@@ -369,7 +369,7 @@ async function submitConfidenceRating(sessionNumber, rating) {
   try {
     if (!currentUser) return;
 
-    if (!window.supabase) {
+    if (!window.supabaseClient) {
       // Just update in memory
       if (progressData[sessionNumber - 1]) {
         progressData[sessionNumber - 1].confidence_rating = rating;
@@ -385,7 +385,7 @@ async function submitConfidenceRating(sessionNumber, rating) {
     const timestamp = new Date().toISOString();
 
     // Update database
-    const { error } = await window.supabase
+    const { error } = await window.supabaseClient
       .from('session_progress')
       .update({
         status: 'completed',
@@ -399,7 +399,7 @@ async function submitConfidenceRating(sessionNumber, rating) {
     if (error) {
       // If no row exists, insert it
       if (error.code === 'PGRST116') {
-        const { error: insertError } = await window.supabase
+        const { error: insertError } = await window.supabaseClient
           .from('session_progress')
           .insert({
             user_id: currentUser.id,
@@ -807,7 +807,7 @@ function initializeAll() {
   // If on index page, load progress after a short delay to ensure auth is set up
   if (isIndexPage()) {
     setTimeout(async () => {
-      if (currentUser && window.supabase) {
+      if (currentUser && window.supabaseClient) {
         await loadProgress();
       }
     }, 100);

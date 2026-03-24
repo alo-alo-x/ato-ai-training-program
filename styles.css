@@ -1153,43 +1153,49 @@ button, .btn {
    10. OUTCOMES & METRICS GRIDS
    ============================================================================ */
 
-/* Outcomes Grid - 2-3 columns responsive */
+/* Outcomes Grid - compact 3-column */
 .outcomes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--spacing-lg);
-  margin-bottom: var(--spacing-2xl);
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .outcome-card {
   background-color: var(--color-card);
-  border-radius: var(--rounded-xl);
-  padding: var(--spacing-lg);
-  box-shadow: var(--shadow-md);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-sm);
   transition: all var(--transition-base);
-  border-top: 4px solid var(--color-accent);
+  border-top: 3px solid var(--color-accent);
   display: flex;
   flex-direction: column;
 }
 
 .outcome-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .outcome-icon {
-  font-size: 2.5rem;
-  margin-bottom: var(--spacing-md);
+  font-size: 1.5rem;
+  margin-bottom: var(--spacing-xs);
 }
 
 .outcome-card h3 {
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
   color: var(--color-primary);
+  font-size: 0.95rem;
 }
 
 .outcome-card p {
   color: var(--color-text-light);
   flex-grow: 1;
+  font-size: 0.8rem;
+  line-height: 1.4;
 }
 
 /* Metrics Grid - 4 columns responsive */
@@ -1227,6 +1233,37 @@ button, .btn {
   font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+/* Mini CTA (above What You'll Learn) */
+.mini-cta {
+  text-align: center;
+  padding: var(--spacing-xl) var(--spacing-lg);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.mini-cta p {
+  color: var(--color-text-light);
+  margin-bottom: var(--spacing-md);
+  font-size: var(--text-base);
+}
+
+.mini-cta .cta-button {
+  display: inline-block;
+  background: var(--color-accent);
+  color: white;
+  padding: 0.6rem 1.5rem;
+  border-radius: var(--rounded-lg);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--text-sm);
+  text-decoration: none;
+  transition: all var(--transition-base);
+}
+
+.mini-cta .cta-button:hover {
+  background: var(--color-accent-dark);
+  transform: translateY(-1px);
 }
 
 @media (max-width: 768px) {
@@ -1740,8 +1777,13 @@ footer a:hover {
   max-width: 800px;
   margin: 0 auto;
 }
-.faq-section .section-header {
+/* Center all section headers globally */
+.section-header {
   text-align: center;
+  margin-bottom: 2rem;
+}
+
+.faq-section .section-header {
   margin-bottom: 2rem;
 }
 .faq-list {

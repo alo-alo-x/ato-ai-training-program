@@ -387,10 +387,25 @@
   <!-- Supabase SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script>
-    window.supabaseClient = window.supabase.createClient(
-      'https://voulsppunocjxoayegdn.supabase.co',
-      'sb_publishable_38u3LbEVQS1eiAkxX9-SdA_Vgf0m1fd'
-    );
+    console.log('supabase global type:', typeof window.supabase);
+    console.log('supabase global value:', window.supabase);
+    console.log('supabase keys:', window.supabase ? Object.keys(window.supabase) : 'N/A');
+    try {
+      var sb = window.supabase;
+      if (sb && sb.createClient) {
+        window.supabaseClient = sb.createClient(
+          'https://voulsppunocjxoayegdn.supabase.co',
+          'sb_publishable_38u3LbEVQS1eiAkxX9-SdA_Vgf0m1fd'
+        );
+      } else if (typeof createClient === 'function') {
+        window.supabaseClient = createClient(
+          'https://voulsppunocjxoayegdn.supabase.co',
+          'sb_publishable_38u3LbEVQS1eiAkxX9-SdA_Vgf0m1fd'
+        );
+      } else {
+        console.error('Supabase SDK not found. Available globals:', Object.keys(window).filter(k => k.toLowerCase().includes('supa')));
+      }
+    } catch(e) { console.error('Supabase init error:', e); }
   </script>
   <script src="./script.js"></script>
 </body>

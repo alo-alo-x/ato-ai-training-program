@@ -1,257 +1,732 @@
-/**
- * ATO AI Training Program - Main JavaScript
- * Handles all interactivity: animations, navigation, progress tracking, accordions
- * Works on both index page and individual session pages
- */
-
 // ============================================================================
-// PAGE LOAD ANIMATION
+// ATO AI Training Site - Main Script
+// Handles: Auth, Progress Tracking, Animations, Mobile Nav, Page Load
 // ============================================================================
 
-/**
- * Triggers fade-in animation on page load
- * CSS should transition body from opacity 0 to 1 when 'loaded' class is present
- */
-function initPageLoadAnimation() {
-  // Wait for DOM to be fully parsed
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-      // Add loaded class to trigger CSS opacity transition
-      document.body.classList.add('loaded');
-    });
-  } else {
-    // If DOMContentLoaded has already fired
-    document.body.classList.add('loaded');
-  }
-}
+// STATE MANAGEMENT
+let currentUser = null;
+let progressData = [
+  { session: 1, status: 'not_started', completed_at: null, confidence_rating: null },
+  { session: 2, status: 'not_started', completed_at: null, confidence_rating: null },
+  { session: 3, status: 'not_started', completed_at: null, confidence_rating: null },
+  { session: 4, status: 'not_started', completed_at: null, confidence_rating: null },
+  { session: 5, status: 'not_started', completed_at: null, confidence_rating: null }
+];
 
 // ============================================================================
-// SCROLL ANIMATIONS - INTERSECTION OBSERVER
+// AUTH FUNCTIONALITY
 // ============================================================================
 
 /**
- * Initializes Intersection Observer for fade-in and slide-in animations
- * Elements with 'fade-in' or 'slide-in-left' classes will animate when entering viewport
+ * Initialize auth - check session and listen for changes
  */
-function initScrollAnimations() {
-  // Elements to observe
-  const observableElements = document.querySelectorAll('.fade-in, .slide-in-left');
+async function initializeAuth() {
+  try {
+    if (!window.supabase) {
+      console.warn('Supabase not initialized - auth will not persist');
+      updateAuthUI(null);
+      return;
+    }
 
-  if (observableElements.length === 0) return; // No elements to animate
+    const { data: { session } } = await window.supabase.auth.getSession();
+    currentUser = session?.user || null;
+    updateAuthUI(currentUser);
 
-  // Intersection Observer options
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px'
-  };
+    // Listen for auth state changes
+    const { data: { subscription } } = window.supabase.auth.onAuthStateChange(
+      (event, session) => {
+        currentUser = session?.user || null;
+        updateAuthUI(currentUser);
 
-  // Callback when element enters viewport
-  const observerCallback = (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        const element = entry.target;
-        const delay = element.getAttribute('data-delay');
-
-        // Apply staggered delay if data-delay attribute exists
-        if (delay) {
-          element.style.transitionDelay = delay + 'ms';
+        // If user just logged in and we're on index, load progress
+        if (event === 'SIGNED_IN' && isIndexPage()) {
+          loadProgress();
         }
 
-        // Add visible class to trigger CSS animation
-        element.classList.add('visible');
+        // If user logs out, redirect to index
+        if (event === 'SIGNED_OUT') {
+          window.location.href = 'index.html';
+        }
+      }
+    );
 
-        // Only animate once - unobserve after animation
-        observer.unobserve(element);
+    return () => subscription?.unsubscribe();
+  } catch (error) {
+    console.error('Auth initialization error:', error);
+    updateAuthUI(null);
+  }
+}
+
+/**
+ * Send magic link to email
+ */
+async function sendMagicLink(email) {
+  try {
+    if (!window.supabase) {
+      showAuthError('Supabase not available');
+      return false;
+    }
+
+    if (!email || !email.includes('@')) {
+      showAuthError('Please enter a valid email');
+      return false;
+    }
+
+    const { error } = await window.supabase.auth.signInWithOtp({
+      email: email,
+      options: {
+        emailRedirectTo: window.location.origin + window.location.pathname
       }
     });
-  };
 
-  // Create and start observer
-  const observer = new IntersectionObserver(observerCallback, observerOptions);
-  observableElements.forEach((element) => observer.observe(element));
+    if (error) {
+      showAuthError(error.message || 'Failed to send magic link');
+      return false;
+    }
+
+    showAuthSuccess('Check your email for a login link!');
+    return true;
+  } catch (error) {
+    console.error('Magic link error:', error);
+    showAuthError(error.message || 'Failed to send magic link');
+    return false;
+  }
+}
+
+/**
+ * Sign out user
+ */
+async function signOut() {
+  try {
+    if (!window.supabase) {
+      currentUser = null;
+      updateAuthUI(null);
+      window.location.href = 'index.html';
+      return;
+    }
+
+    const { error } = await window.supabase.auth.signOut();
+    if (error) throw error;
+
+    currentUser = null;
+    updateAuthUI(null);
+    window.location.href = 'index.html';
+  } catch (error) {
+    console.error('Sign out error:', error);
+    showAuthError('Failed to sign out');
+  }
+}
+
+/**
+ * Update auth UI based on login state
+ */
+function updateAuthUI(user) {
+  const authForm = document.querySelector('.auth-form');
+  const authStatus = document.querySelector('.auth-status');
+
+  if (user) {
+    // User is logged in
+    if (authForm) authForm.style.display = 'none';
+    if (authStatus) {
+      authStatus.style.display = 'flex';
+      authStatus.innerHTML = `
+        <div class="auth-user-info">
+          <span class="auth-email">${escapeHtml(user.email)}</span>
+          <button class="auth-logout-btn" onclick="signOut()">Logout</button>
+        </div>
+      `;
+    }
+    // Update nav to show logged in state
+    const navUserInfo = document.querySelector('.nav-user-info');
+    if (navUserInfo) {
+      navUserInfo.style.display = 'flex';
+      navUserInfo.innerHTML = `
+        <span>${escapeHtml(user.email)}</span>
+        <button class="nav-logout-btn" onclick="signOut()">Logout</button>
+      `;
+    }
+  } else {
+    // User is not logged in
+    if (authForm) authForm.style.display = 'block';
+    if (authStatus) authStatus.style.display = 'none';
+
+    const navUserInfo = document.querySelector('.nav-user-info');
+    if (navUserInfo) navUserInfo.style.display = 'none';
+
+    // Initialize login form if on index
+    initializeLoginForm();
+  }
+}
+
+/**
+ * Initialize the login form on index page
+ */
+function initializeLoginForm() {
+  const form = document.querySelector('.auth-form');
+  if (!form) return;
+
+  const emailInput = form.querySelector('input[type="email"]');
+  const submitBtn = form.querySelector('button[type="submit"]');
+
+  if (emailInput && submitBtn) {
+    submitBtn.onclick = async (e) => {
+      e.preventDefault();
+      const email = emailInput.value.trim();
+      const success = await sendMagicLink(email);
+      if (success) {
+        emailInput.value = '';
+      }
+    };
+
+    // Allow enter key to submit
+    emailInput.onkeypress = (e) => {
+      if (e.key === 'Enter') {
+        submitBtn.click();
+      }
+    };
+  }
+}
+
+/**
+ * Show auth error message
+ */
+function showAuthError(message) {
+  const msgEl = document.querySelector('.auth-message');
+  if (msgEl) {
+    msgEl.textContent = message;
+    msgEl.className = 'auth-message error';
+    msgEl.style.display = 'block';
+    setTimeout(() => {
+      msgEl.style.display = 'none';
+    }, 5000);
+  }
+}
+
+/**
+ * Show auth success message
+ */
+function showAuthSuccess(message) {
+  const msgEl = document.querySelector('.auth-message');
+  if (msgEl) {
+    msgEl.textContent = message;
+    msgEl.className = 'auth-message success';
+    msgEl.style.display = 'block';
+    setTimeout(() => {
+      msgEl.style.display = 'none';
+    }, 5000);
+  }
 }
 
 // ============================================================================
-// PROGRESS TRACKER (with localStorage persistence)
+// PROGRESS TRACKING FUNCTIONALITY
 // ============================================================================
 
-const STORAGE_KEY = 'ato-training-progress';
+/**
+ * Check if we're on the index page
+ */
+function isIndexPage() {
+  return window.location.pathname.endsWith('index.html') ||
+         window.location.pathname.endsWith('/');
+}
 
 /**
- * Load progress state from localStorage, or default to all false
+ * Load progress from database
  */
-function loadProgress() {
+async function loadProgress() {
   try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed) && parsed.length === 5) {
-        return parsed;
+    if (!window.supabase || !currentUser) {
+      console.warn('Cannot load progress: supabase or user not available');
+      return progressData;
+    }
+
+    const { data, error } = await window.supabase
+      .from('session_progress')
+      .select('*')
+      .eq('user_id', currentUser.id)
+      .order('session', { ascending: true });
+
+    if (error) throw error;
+
+    // Build progress map from database
+    if (data && data.length > 0) {
+      const dbMap = {};
+      data.forEach(row => {
+        dbMap[row.session] = {
+          session: row.session,
+          status: row.status,
+          completed_at: row.completed_at,
+          confidence_rating: row.confidence_rating
+        };
+      });
+
+      // Merge with default progress data
+      progressData = progressData.map(item =>
+        dbMap[item.session] || item
+      );
+    }
+
+    updateProgressUI(progressData);
+    return progressData;
+  } catch (error) {
+    console.error('Load progress error:', error);
+    // Fall back to in-memory data
+    updateProgressUI(progressData);
+    return progressData;
+  }
+}
+
+/**
+ * Toggle step completion (called from step dot buttons on index)
+ */
+async function toggleStep(sessionNumber) {
+  try {
+    if (!currentUser) {
+      showProgressMessage('Please log in to track progress', 'error');
+      return;
+    }
+
+    if (!window.supabase) {
+      // Just toggle in memory
+      const item = progressData[sessionNumber - 1];
+      if (item) {
+        item.status = item.status === 'completed' ? 'not_started' : 'completed';
+        item.completed_at = item.status === 'completed' ? new Date().toISOString() : null;
+      }
+      updateProgressUI(progressData);
+      return;
+    }
+
+    const currentItem = progressData[sessionNumber - 1];
+    const isCompleted = currentItem?.status === 'completed';
+    const newStatus = isCompleted ? 'not_started' : 'completed';
+    const timestamp = newStatus === 'completed' ? new Date().toISOString() : null;
+
+    // Update database
+    const { error } = await window.supabase
+      .from('session_progress')
+      .update({
+        status: newStatus,
+        completed_at: timestamp,
+        updated_at: new Date().toISOString()
+      })
+      .eq('user_id', currentUser.id)
+      .eq('session', sessionNumber);
+
+    if (error) {
+      // If no row exists, insert it
+      if (error.code === 'PGRST116') {
+        const { error: insertError } = await window.supabase
+          .from('session_progress')
+          .insert({
+            user_id: currentUser.id,
+            session: sessionNumber,
+            status: newStatus,
+            completed_at: timestamp,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          });
+        if (insertError) throw insertError;
+      } else {
+        throw error;
       }
     }
-  } catch (e) {
-    // Ignore parse errors
+
+    // Update local state
+    if (progressData[sessionNumber - 1]) {
+      progressData[sessionNumber - 1].status = newStatus;
+      progressData[sessionNumber - 1].completed_at = timestamp;
+    }
+
+    updateProgressUI(progressData);
+  } catch (error) {
+    console.error('Toggle step error:', error);
+    showProgressMessage('Failed to update progress', 'error');
   }
-  return [false, false, false, false, false];
 }
 
 /**
- * Save progress state to localStorage
+ * Mark session as complete and show confidence rating modal
  */
-function saveProgress() {
+async function markSessionComplete(sessionNumber) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(progressState));
-  } catch (e) {
-    // Ignore storage errors
+    if (!currentUser) {
+      showProgressMessage('Please log in to complete this session', 'error');
+      return;
+    }
+
+    // Show confidence rating modal
+    showConfidenceRatingModal(sessionNumber);
+  } catch (error) {
+    console.error('Mark session complete error:', error);
+    showProgressMessage('Failed to complete session', 'error');
   }
 }
 
-let progressState = loadProgress();
-
 /**
- * Toggles completion status of a training step
- * @param {number} stepNum - Step number (1-5, matches HTML onclick)
+ * Submit confidence rating and update database
  */
-function toggleStep(stepNum) {
-  const index = stepNum - 1;
-  if (index < 0 || index >= progressState.length) return;
-  progressState[index] = !progressState[index];
-  saveProgress();
-  updateProgress();
+async function submitConfidenceRating(sessionNumber, rating) {
+  try {
+    if (!currentUser) return;
+
+    if (!window.supabase) {
+      // Just update in memory
+      if (progressData[sessionNumber - 1]) {
+        progressData[sessionNumber - 1].confidence_rating = rating;
+        progressData[sessionNumber - 1].status = 'completed';
+        progressData[sessionNumber - 1].completed_at = new Date().toISOString();
+      }
+      closeConfidenceRatingModal();
+      updateProgressUI(progressData);
+      showSessionCompleteMessage(sessionNumber);
+      return;
+    }
+
+    const timestamp = new Date().toISOString();
+
+    // Update database
+    const { error } = await window.supabase
+      .from('session_progress')
+      .update({
+        status: 'completed',
+        completed_at: timestamp,
+        confidence_rating: rating,
+        updated_at: timestamp
+      })
+      .eq('user_id', currentUser.id)
+      .eq('session', sessionNumber);
+
+    if (error) {
+      // If no row exists, insert it
+      if (error.code === 'PGRST116') {
+        const { error: insertError } = await window.supabase
+          .from('session_progress')
+          .insert({
+            user_id: currentUser.id,
+            session: sessionNumber,
+            status: 'completed',
+            completed_at: timestamp,
+            confidence_rating: rating,
+            created_at: timestamp,
+            updated_at: timestamp
+          });
+        if (insertError) throw insertError;
+      } else {
+        throw error;
+      }
+    }
+
+    // Update local state
+    if (progressData[sessionNumber - 1]) {
+      progressData[sessionNumber - 1].status = 'completed';
+      progressData[sessionNumber - 1].completed_at = timestamp;
+      progressData[sessionNumber - 1].confidence_rating = rating;
+    }
+
+    closeConfidenceRatingModal();
+    updateProgressUI(progressData);
+    showSessionCompleteMessage(sessionNumber);
+  } catch (error) {
+    console.error('Submit rating error:', error);
+    showProgressMessage('Failed to save rating', 'error');
+  }
 }
 
 /**
- * Updates progress bar UI based on current state
+ * Update progress UI on the page
  */
-function updateProgress() {
-  const completedCount = progressState.filter(Boolean).length;
-  const percentage = Math.round((completedCount / progressState.length) * 100);
+function updateProgressUI(progress) {
+  if (!progress || progress.length === 0) return;
 
-  // Update progress bar fill
-  const progressFill = document.querySelector('.progress-fill');
-  if (progressFill) {
-    progressFill.style.width = percentage + '%';
+  // Update progress bar on index page
+  const progressBar = document.querySelector('.progress-bar-fill');
+  if (progressBar) {
+    const completedCount = progress.filter(p => p.status === 'completed').length;
+    const percentage = (completedCount / 5) * 100;
+    progressBar.style.width = percentage + '%';
   }
 
   // Update percentage text
-  const progressPct = document.querySelector('.progress-percentage');
-  if (progressPct) {
-    progressPct.textContent = percentage + '%';
+  const percentageText = document.querySelector('.progress-percentage');
+  if (percentageText) {
+    const completedCount = progress.filter(p => p.status === 'completed').length;
+    percentageText.textContent = Math.round((completedCount / 5) * 100) + '%';
   }
 
-  // Update step dot styles
-  const stepDots = document.querySelectorAll('.step-dot');
-  stepDots.forEach((dot, index) => {
-    if (index < progressState.length) {
-      const numberEl = dot.querySelector('.step-number');
-      if (progressState[index]) {
+  // Update step dots
+  progress.forEach((item, index) => {
+    const dotButton = document.querySelector(`button[onclick="toggleStep(${item.session})"]`);
+    if (dotButton) {
+      const dot = dotButton.querySelector('.step-dot') || dotButton;
+
+      if (item.status === 'completed') {
         dot.classList.add('completed');
-        if (numberEl) numberEl.textContent = '✓';
+        dot.textContent = '✓';
       } else {
         dot.classList.remove('completed');
-        if (numberEl) numberEl.textContent = (index + 1);
+        dot.textContent = item.session;
       }
     }
   });
+
+  // Update progress element on session pages (if it exists)
+  const sessionProgressEl = document.querySelector('[data-session-progress]');
+  if (sessionProgressEl) {
+    const currentSessionNum = parseInt(sessionProgressEl.dataset.sessionProgress);
+    const currentItem = progress.find(p => p.session === currentSessionNum);
+
+    if (currentItem && currentItem.status === 'completed') {
+      sessionProgressEl.classList.add('completed');
+      if (sessionProgressEl.querySelector('.progress-indicator')) {
+        sessionProgressEl.querySelector('.progress-indicator').textContent = '✓';
+      }
+    }
+  }
 }
 
 /**
- * Initializes progress tracker
+ * Show session complete message with next session link
  */
-function initProgressTracker() {
-  const stepDots = document.querySelectorAll('.step-dot');
-  if (stepDots.length === 0) return;
+function showSessionCompleteMessage(sessionNumber) {
+  const msgEl = document.querySelector('.progress-message');
+  if (msgEl) {
+    const nextSession = sessionNumber < 5 ? sessionNumber + 1 : null;
+    let html = `<div class="success-message">
+      <strong>Session ${sessionNumber} Complete!</strong>`;
+    if (nextSession) {
+      html += `<br><a href="session-${nextSession}.html">Continue to Session ${nextSession}</a>`;
+    } else {
+      html += `<br>You've completed all sessions!`;
+    }
+    html += '</div>';
 
-  // Initial render from saved state
-  updateProgress();
+    msgEl.innerHTML = html;
+    msgEl.style.display = 'block';
+  } else {
+    // Create a simple alert if no message element
+    alert(`Session ${sessionNumber} complete!`);
+  }
+}
+
+/**
+ * Show progress message
+ */
+function showProgressMessage(message, type = 'info') {
+  const msgEl = document.querySelector('.progress-message');
+  if (msgEl) {
+    msgEl.textContent = message;
+    msgEl.className = `progress-message ${type}`;
+    msgEl.style.display = 'block';
+  }
 }
 
 // ============================================================================
-// SESSION ACCORDION (INDEX PAGE) - For toggling session details in cards
+// CONFIDENCE RATING MODAL
 // ============================================================================
 
 /**
- * Toggles session accordion open/closed
- * Uses max-height CSS transition for smooth animation
- * Closes other open sessions (single-open accordion behavior)
- * @param {HTMLElement} headerElement - The session header that was clicked
+ * Show confidence rating modal
  */
-function toggleSession(headerElement) {
-  // Get the details container (should be next sibling or child)
-  const detailsDiv = headerElement.nextElementSibling;
+function showConfidenceRatingModal(sessionNumber) {
+  // Remove existing modal if present
+  const existingModal = document.getElementById('confidence-rating-modal');
+  if (existingModal) existingModal.remove();
 
-  if (!detailsDiv) return;
+  const modal = document.createElement('div');
+  modal.id = 'confidence-rating-modal';
+  modal.className = 'confidence-rating-modal';
+  modal.innerHTML = `
+    <div class="confidence-rating-content">
+      <h3>How confident do you feel about this session?</h3>
+      <p class="confidence-rating-scale">1 = Not confident | 5 = Very confident</p>
+      <div class="confidence-rating-buttons">
+        <button class="confidence-btn" onclick="submitConfidenceRating(${sessionNumber}, 1)">1</button>
+        <button class="confidence-btn" onclick="submitConfidenceRating(${sessionNumber}, 2)">2</button>
+        <button class="confidence-btn" onclick="submitConfidenceRating(${sessionNumber}, 3)">3</button>
+        <button class="confidence-btn" onclick="submitConfidenceRating(${sessionNumber}, 4)">4</button>
+        <button class="confidence-btn" onclick="submitConfidenceRating(${sessionNumber}, 5)">5</button>
+      </div>
+      <button class="confidence-skip" onclick="closeConfidenceRatingModal()">Skip for now</button>
+    </div>
+  `;
 
-  // Check if currently open
-  const isOpen = detailsDiv.classList.contains('open');
+  // Add modal styles
+  const style = document.createElement('style');
+  style.id = 'confidence-modal-styles';
+  if (!document.getElementById('confidence-modal-styles')) {
+    style.textContent = `
+      .confidence-rating-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
 
-  // Get all session containers on the page
-  const allSessionHeaders = document.querySelectorAll('.session-header');
+      .confidence-rating-content {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        animation: slideUp 0.3s ease-out;
+      }
 
-  // Close all other sessions
-  allSessionHeaders.forEach((header) => {
-    if (header !== headerElement) {
-      const otherDetails = header.nextElementSibling;
-      if (otherDetails) {
-        otherDetails.classList.remove('open');
-        // Also toggle the arrow if it exists
-        const arrow = header.querySelector('.session-toggle-arrow');
-        if (arrow) {
-          arrow.classList.remove('open');
+      @keyframes slideUp {
+        from {
+          transform: translateY(20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
         }
       }
-    }
-  });
 
-  // Toggle current session
-  if (isOpen) {
-    detailsDiv.classList.remove('open');
-  } else {
-    detailsDiv.classList.add('open');
+      .confidence-rating-content h3 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.3rem;
+        color: #333;
+      }
+
+      .confidence-rating-scale {
+        color: #666;
+        font-size: 0.9rem;
+        margin: 0 0 1.5rem 0;
+      }
+
+      .confidence-rating-buttons {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        justify-content: center;
+      }
+
+      .confidence-btn {
+        width: 50px;
+        height: 50px;
+        border: 2px solid #ddd;
+        background: white;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: bold;
+        transition: all 0.2s ease;
+      }
+
+      .confidence-btn:hover {
+        border-color: #4CAF50;
+        color: #4CAF50;
+      }
+
+      .confidence-btn:active {
+        background: #4CAF50;
+        color: white;
+        border-color: #4CAF50;
+      }
+
+      .confidence-skip {
+        background: none;
+        border: none;
+        color: #999;
+        cursor: pointer;
+        font-size: 0.9rem;
+        text-decoration: underline;
+        padding: 0;
+      }
+
+      .confidence-skip:hover {
+        color: #666;
+      }
+    `;
+    document.head.appendChild(style);
   }
 
-  // Toggle arrow rotation
-  const toggleArrow = headerElement.querySelector('.session-toggle-arrow');
-  if (toggleArrow) {
-    toggleArrow.classList.toggle('open');
-  }
+  document.body.appendChild(modal);
 }
 
 /**
- * Initializes session accordion
- * Attaches click handlers to all session headers
+ * Close confidence rating modal
  */
-function initSessionAccordion() {
-  const sessionHeaders = document.querySelectorAll('.session-header');
+function closeConfidenceRatingModal() {
+  const modal = document.getElementById('confidence-rating-modal');
+  if (modal) {
+    modal.remove();
+  }
+}
 
-  if (sessionHeaders.length === 0) return; // No sessions on this page
+// ============================================================================
+// SCROLL ANIMATIONS
+// ============================================================================
 
-  sessionHeaders.forEach((header) => {
-    header.addEventListener('click', () => {
-      toggleSession(header);
+/**
+ * Initialize scroll observer for fade-in animations
+ */
+function initializeScrollObserver() {
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -100px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const delay = entry.target.dataset.delay
+          ? parseInt(entry.target.dataset.delay)
+          : 0;
+
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, delay);
+      }
     });
+  }, observerOptions);
+
+  // Observe all fade-in elements
+  document.querySelectorAll('.fade-in').forEach(el => {
+    observer.observe(el);
   });
 }
 
 // ============================================================================
-// ACCORDION TOGGLE - For session card details on index page
+// ACCORDION FUNCTIONALITY
 // ============================================================================
 
 /**
- * Toggles accordion open/closed for session card details
- * @param {HTMLElement} button - The accordion toggle button
+ * Toggle accordion
  */
 function toggleAccordion(button) {
   const content = button.nextElementSibling;
+  if (!content || !content.classList.contains('accordion-content')) {
+    return;
+  }
 
-  if (!content) return;
+  const isOpen = content.classList.contains('open');
 
-  // Toggle open class on button
-  button.classList.toggle('open');
+  // Close all accordions (optional - can be commented out to allow multiple open)
+  document.querySelectorAll('.accordion-content.open').forEach(el => {
+    if (el !== content) {
+      el.classList.remove('open');
+      const btn = el.previousElementSibling;
+      if (btn && btn.querySelector('.accordion-arrow')) {
+        btn.querySelector('.accordion-arrow').style.transform = 'rotate(0deg)';
+      }
+    }
+  });
 
-  // Toggle open class on content
-  if (content && content.classList.contains('accordion-content')) {
-    content.classList.toggle('open');
+  // Toggle current accordion
+  content.classList.toggle('open');
+
+  // Rotate arrow
+  const arrow = button.querySelector('.accordion-arrow');
+  if (arrow) {
+    arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
   }
 }
 
@@ -260,159 +735,89 @@ function toggleAccordion(button) {
 // ============================================================================
 
 /**
- * Toggles mobile navigation menu visibility
- * Toggles class on nav-links and mobile menu toggle button (hamburger or nav-toggle)
+ * Toggle mobile navigation
  */
 function toggleMobileNav() {
   const navLinks = document.querySelector('.nav-links');
-  const mobileMenuToggle = document.querySelector('.mobile-menu-toggle, .hamburger, .nav-toggle');
+  const hamburger = document.querySelector('.hamburger');
 
   if (navLinks) {
     navLinks.classList.toggle('active');
   }
-  if (mobileMenuToggle) {
-    mobileMenuToggle.classList.toggle('active');
+
+  if (hamburger) {
+    hamburger.classList.toggle('active');
   }
 }
 
 /**
- * Closes mobile navigation menu
- * Called when a navigation link is clicked
+ * Close mobile nav when a link is clicked
  */
-function closeMobileNav() {
-  const navLinks = document.querySelector('.nav-links');
-  const mobileMenuToggle = document.querySelector('.mobile-menu-toggle, .hamburger, .nav-toggle');
+function initializeMobileNavLinks() {
+  const navLinks = document.querySelectorAll('.nav-links a');
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      const navLinksContainer = document.querySelector('.nav-links');
+      const hamburger = document.querySelector('.hamburger');
 
-  if (navLinks) {
-    navLinks.classList.remove('active');
-  }
-  if (mobileMenuToggle) {
-    mobileMenuToggle.classList.remove('active');
-  }
-}
-
-/**
- * Initializes mobile navigation
- * Attaches click handlers to mobile menu toggle (hamburger/nav-toggle) and nav links
- */
-function initMobileNav() {
-  const mobileMenuToggle = document.querySelector('.mobile-menu-toggle, .hamburger, .nav-toggle');
-
-  if (mobileMenuToggle) {
-    mobileMenuToggle.addEventListener('click', toggleMobileNav);
-  }
-
-  // Close menu when a navigation link is clicked
-  const navLinks = document.querySelectorAll('nav a');
-  navLinks.forEach((link) => {
-    link.addEventListener('click', closeMobileNav);
-  });
-}
-
-// ============================================================================
-// SMOOTH SCROLLING
-// ============================================================================
-
-/**
- * Initializes smooth scrolling for anchor links
- * Accounts for sticky navigation height offset
- */
-function initSmoothScrolling() {
-  // Get all anchor links
-  const anchorLinks = document.querySelectorAll('a[href^="#"]');
-
-  anchorLinks.forEach((link) => {
-    link.addEventListener('click', function(e) {
-      const href = this.getAttribute('href');
-
-      // Skip if href is just '#' or empty
-      if (href === '#' || href === '') return;
-
-      const targetElement = document.querySelector(href);
-
-      if (targetElement) {
-        e.preventDefault();
-
-        // Calculate offset for sticky nav (adjust value if needed)
-        const navHeight = document.querySelector('nav')
-          ? document.querySelector('nav').offsetHeight
-          : 0;
-        const offsetTop = targetElement.offsetTop - navHeight - 20; // 20px extra padding
-
-        // Smooth scroll
-        window.scrollTo({
-          top: offsetTop,
-          behavior: 'smooth'
-        });
-      }
+      if (navLinksContainer) navLinksContainer.classList.remove('active');
+      if (hamburger) hamburger.classList.remove('active');
     });
   });
 }
 
 // ============================================================================
-// ACTIVE NAVIGATION
+// UTILITY FUNCTIONS
 // ============================================================================
 
 /**
- * Highlights current session in navigation
- * Used on individual session pages to show which session is active
+ * Escape HTML to prevent XSS
  */
-function initActiveNavigation() {
-  // Get current page URL or session identifier
-  const currentPath = window.location.pathname;
-
-  // Find all session links in navigation
-  const sessionLinks = document.querySelectorAll('nav a[data-session]');
-
-  if (sessionLinks.length === 0) return; // No session links on this page
-
-  sessionLinks.forEach((link) => {
-    const linkHref = link.getAttribute('href');
-
-    // Check if link matches current page
-    if (currentPath.includes(linkHref.replace(/^\//, '').replace(/\.html$/, ''))) {
-      link.classList.add('active');
-    } else {
-      link.classList.remove('active');
-    }
-  });
+function escapeHtml(text) {
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+  return text.replace(/[&<>"']/g, m => map[m]);
 }
 
 // ============================================================================
-// INITIALIZATION
+// PAGE INITIALIZATION
 // ============================================================================
 
 /**
- * Main initialization function
- * Runs all setup functions when DOM is ready
+ * Initialize all functionality when DOM is ready
  */
-function initializeApp() {
-  // Run page load animation
-  initPageLoadAnimation();
+function initializeAll() {
+  // Add 'loaded' class to body
+  document.body.classList.add('loaded');
 
-  // Initialize scroll animations (Intersection Observer)
-  initScrollAnimations();
+  // Initialize auth
+  initializeAuth();
 
-  // Initialize progress tracker (index page only)
-  initProgressTracker();
+  // Initialize scroll observer
+  initializeScrollObserver();
 
-  // Initialize session accordion (index page only)
-  initSessionAccordion();
+  // Initialize mobile nav
+  initializeMobileNavLinks();
 
-  // Initialize mobile navigation
-  initMobileNav();
-
-  // Initialize smooth scrolling
-  initSmoothScrolling();
-
-  // Initialize active navigation
-  initActiveNavigation();
+  // If on index page, load progress after a short delay to ensure auth is set up
+  if (isIndexPage()) {
+    setTimeout(async () => {
+      if (currentUser && window.supabase) {
+        await loadProgress();
+      }
+    }, 100);
+  }
 }
 
 // Run initialization when DOM is ready
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeApp);
+  document.addEventListener('DOMContentLoaded', initializeAll);
 } else {
-  // If this script loads after DOMContentLoaded has fired
-  initializeApp();
+  // DOM is already loaded
+  initializeAll();
 }

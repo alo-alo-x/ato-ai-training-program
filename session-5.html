@@ -21,6 +21,17 @@
                 <li><a href="./index.html#faq">FAQ</a></li>
                 <li><a href="./index.html#contact">Contact</a></li>
             </ul>
+            <!-- Auth UI -->
+            <div class="auth-container">
+              <div class="auth-form" id="authForm">
+                <input type="email" id="loginEmail" placeholder="Your email" class="auth-input">
+                <button onclick="sendMagicLink(document.getElementById('loginEmail').value)" class="auth-btn">Log In</button>
+              </div>
+              <div class="auth-status" id="authStatus" style="display:none;">
+                <span class="auth-email" id="authEmail"></span>
+                <button onclick="signOut()" class="auth-btn auth-btn-logout">Log Out</button>
+              </div>
+            </div>
         </div>
     </nav>
 
@@ -270,6 +281,13 @@
                 <p style="text-align: center; color: var(--color-text-light); font-style: italic;">Final Session — Congratulations on completing the program!</p>
             </div>
         </section>
+
+        <!-- Mark Complete -->
+        <section class="mark-complete-section" id="markComplete">
+          <h3>Finished this session?</h3>
+          <p class="complete-status">Mark it complete to track your progress.</p>
+          <button class="mark-complete-btn" onclick="markSessionComplete(5)">Mark Session 5 Complete</button>
+        </section>
     </main>
 
     <!-- Footer -->
@@ -280,6 +298,8 @@
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./supabase-config.js"></script>
     <script src="./script.js"></script>
 </body>
 </html>

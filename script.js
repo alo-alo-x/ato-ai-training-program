@@ -72,33 +72,60 @@ function initScrollAnimations() {
 }
 
 // ============================================================================
-// PROGRESS TRACKER
+// PROGRESS TRACKER (with localStorage persistence)
 // ============================================================================
 
+const STORAGE_KEY = 'ato-training-progress';
+
 /**
- * Progress tracker state - array of 5 booleans
- * Index represents step number (0-4), value represents completion status
+ * Load progress state from localStorage, or default to all false
  */
-let progressState = [false, false, false, false, false];
+function loadProgress() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length === 5) {
+        return parsed;
+      }
+    }
+  } catch (e) {
+    // Ignore parse errors
+  }
+  return [false, false, false, false, false];
+}
+
+/**
+ * Save progress state to localStorage
+ */
+function saveProgress() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(progressState));
+  } catch (e) {
+    // Ignore storage errors
+  }
+}
+
+let progressState = loadProgress();
 
 /**
  * Toggles completion status of a training step
- * @param {number} index - Step index (0-4)
+ * @param {number} stepNum - Step number (1-5, matches HTML onclick)
  */
-function toggleStep(index) {
+function toggleStep(stepNum) {
+  const index = stepNum - 1;
   if (index < 0 || index >= progressState.length) return;
   progressState[index] = !progressState[index];
+  saveProgress();
   updateProgress();
 }
 
 /**
  * Updates progress bar UI based on current state
- * Updates: fill bar width, percentage text, dot styles with checkmarks
  */
 function updateProgress() {
-  // Calculate completion percentage
   const completedCount = progressState.filter(Boolean).length;
-  const percentage = (completedCount / progressState.length) * 100;
+  const percentage = Math.round((completedCount / progressState.length) * 100);
 
   // Update progress bar fill
   const progressFill = document.querySelector('.progress-fill');
@@ -107,22 +134,22 @@ function updateProgress() {
   }
 
   // Update percentage text
-  const progressText = document.querySelector('.progress-text');
-  if (progressText) {
-    progressText.textContent = Math.round(percentage) + '%';
+  const progressPct = document.querySelector('.progress-percentage');
+  if (progressPct) {
+    progressPct.textContent = percentage + '%';
   }
 
-  // Update dot styles for each step
-  const progressDots = document.querySelectorAll('.progress-dot');
-  progressDots.forEach((dot, index) => {
+  // Update step dot styles
+  const stepDots = document.querySelectorAll('.step-dot');
+  stepDots.forEach((dot, index) => {
     if (index < progressState.length) {
+      const numberEl = dot.querySelector('.step-number');
       if (progressState[index]) {
         dot.classList.add('completed');
-        // Add checkmark content (via CSS ::before or data attribute)
-        dot.setAttribute('data-completed', 'true');
+        if (numberEl) numberEl.textContent = '✓';
       } else {
         dot.classList.remove('completed');
-        dot.removeAttribute('data-completed');
+        if (numberEl) numberEl.textContent = (index + 1);
       }
     }
   });
@@ -130,20 +157,12 @@ function updateProgress() {
 
 /**
  * Initializes progress tracker
- * Attaches click handlers to progress dots
  */
 function initProgressTracker() {
-  const progressDots = document.querySelectorAll('.progress-dot');
+  const stepDots = document.querySelectorAll('.step-dot');
+  if (stepDots.length === 0) return;
 
-  if (progressDots.length === 0) return; // Not on index page
-
-  progressDots.forEach((dot, index) => {
-    dot.addEventListener('click', () => {
-      toggleStep(index);
-    });
-  });
-
-  // Initial render
+  // Initial render from saved state
   updateProgress();
 }
 

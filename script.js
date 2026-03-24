@@ -22,18 +22,18 @@ let progressData = [
  */
 async function initializeAuth() {
   try {
-    if (!window.supabaseClientClient) {
+    if (!window.supabaseClient) {
       console.warn('Supabase not initialized - auth will not persist');
       updateAuthUI(null);
       return;
     }
 
-    const { data: { session } } = await window.supabaseClientClient.auth.getSession();
+    const { data: { session } } = await window.supabaseClient.auth.getSession();
     currentUser = session?.user || null;
     updateAuthUI(currentUser);
 
     // Listen for auth state changes
-    const { data: { subscription } } = window.supabaseClientClient.auth.onAuthStateChange(
+    const { data: { subscription } } = window.supabaseClient.auth.onAuthStateChange(
       (event, session) => {
         currentUser = session?.user || null;
         updateAuthUI(currentUser);

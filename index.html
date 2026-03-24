@@ -14,10 +14,10 @@
   <!-- Navigation -->
   <nav class="navbar sticky">
     <div class="nav-container">
-      <div class="nav-logo">
+      <a href="index.html" class="nav-logo">
         <span class="logo-main">A Team Overseas</span>
         <span class="logo-accent">AI Training</span>
-      </div>
+      </a>
 
       <ul class="nav-links">
         <li><a href="#about">About</a></li>
@@ -54,17 +54,17 @@
       <p class="hero-subtitle fade-in" data-delay="0.1">A hands-on training program that gets you confident with AI tools before your first day with a client.</p>
 
       <div class="hero-stats fade-in" data-delay="0.2">
-        <div class="stat">
-          <span class="stat-number">5</span>
-          <span class="stat-label">Sessions</span>
+        <div class="hero-stat">
+          <span class="hero-stat-value">5</span>
+          <span class="hero-stat-label">Sessions</span>
         </div>
-        <div class="stat">
-          <span class="stat-number">10-15</span>
-          <span class="stat-label">Hours Total</span>
+        <div class="hero-stat">
+          <span class="hero-stat-value">10-15</span>
+          <span class="hero-stat-label">Hours Total</span>
         </div>
-        <div class="stat">
-          <span class="stat-number">2</span>
-          <span class="stat-label">Weeks</span>
+        <div class="hero-stat">
+          <span class="hero-stat-value">2</span>
+          <span class="hero-stat-label">Weeks</span>
         </div>
       </div>
     </div>
@@ -73,8 +73,10 @@
 
   <!-- Mini CTA -->
   <section class="mini-cta">
-    <p>Ready to jump in? Start with the live kickoff session.</p>
-    <a href="session-1.html" class="cta-button">Start Session 1 →</a>
+    <div class="mini-cta-inner">
+      <p>Ready to jump in? Start with the live kickoff session.</p>
+      <a href="session-1.html" class="cta-button">Start Session 1 →</a>
+    </div>
   </section>
 
   <!-- What You'll Learn Section -->
@@ -168,26 +170,26 @@
         <h2>Frequently Asked Questions</h2>
     </div>
     <div class="faq-list">
-        <div class="faq-item fade-in">
-            <h3>How long does this take?</h3>
+        <details class="faq-item fade-in">
+            <summary>How long does this take?</summary>
             <p>About 10-15 hours spread over two weeks. The sessions are self-paced, so you can fit them around your schedule.</p>
-        </div>
-        <div class="faq-item fade-in">
-            <h3>Do I need to be technical?</h3>
+        </details>
+        <details class="faq-item fade-in">
+            <summary>Do I need to be technical?</summary>
             <p>Not at all. If you can send a text message, you can use these tools. The program starts from zero.</p>
-        </div>
-        <div class="faq-item fade-in">
-            <h3>What tools do I need?</h3>
+        </details>
+        <details class="faq-item fade-in">
+            <summary>What tools do I need?</summary>
             <p>Just a computer and internet access. We'll use free AI tools (ChatGPT, Claude, Gemini) during training. Paid tools get set up after you pass.</p>
-        </div>
-        <div class="faq-item fade-in">
-            <h3>What if I get stuck?</h3>
+        </details>
+        <details class="faq-item fade-in">
+            <summary>What if I get stuck?</summary>
             <p>Your point person (Alli or Jas) is available throughout. There's no penalty for asking questions.</p>
-        </div>
-        <div class="faq-item fade-in">
-            <h3>What happens after I pass?</h3>
+        </details>
+        <details class="faq-item fade-in">
+            <summary>What happens after I pass?</summary>
             <p>You get upgraded to paid AI tools (Claude Pro + Cowork), start working with your client, and join our continuing education program.</p>
-        </div>
+        </details>
     </div>
   </section>
 

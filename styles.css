@@ -220,12 +220,20 @@ nav.navbar.scrolled {
   align-items: center;
 }
 
-.nav-logo {
+a.nav-logo {
   font-family: var(--font-heading);
   font-size: var(--text-xl);
   font-weight: var(--font-weight-extrabold);
   color: var(--color-card);
   letter-spacing: -0.02em;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+a.nav-logo:hover {
+  opacity: 0.9;
 }
 
 .nav-links {
@@ -453,26 +461,29 @@ button, .btn {
 }
 
 .hero-stat {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(10px);
-  padding: var(--spacing-lg);
+  padding: var(--spacing-xl) var(--spacing-lg);
   border-radius: var(--rounded-xl);
   border: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
 }
 
 .hero-stat-value {
-  font-size: var(--text-3xl);
+  font-size: 2.75rem;
   font-weight: var(--font-weight-extrabold);
   color: var(--color-accent-light);
   display: block;
   margin-bottom: var(--spacing-xs);
+  line-height: 1.1;
 }
 
 .hero-stat-label {
-  font-size: var(--text-sm);
-  color: rgba(255, 255, 255, 0.8);
+  font-size: var(--text-base);
+  color: rgba(255, 255, 255, 0.85);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  font-weight: var(--font-weight-semibold);
 }
 
 @media (max-width: 768px) {
@@ -1238,31 +1249,44 @@ button, .btn {
 /* Mini CTA (above What You'll Learn) */
 .mini-cta {
   text-align: center;
-  padding: var(--spacing-xl) var(--spacing-lg);
-  max-width: 600px;
-  margin: 0 auto;
+  padding: var(--spacing-lg) var(--spacing-lg);
+  max-width: 700px;
+  margin: 0 auto var(--spacing-xl);
+}
+
+.mini-cta-inner {
+  background: var(--gradient-cta);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
 }
 
 .mini-cta p {
-  color: var(--color-text-light);
-  margin-bottom: var(--spacing-md);
+  color: white;
+  margin: 0;
   font-size: var(--text-base);
+  font-weight: var(--font-weight-medium);
 }
 
 .mini-cta .cta-button {
   display: inline-block;
-  background: var(--color-accent);
-  color: white;
-  padding: 0.6rem 1.5rem;
+  background: white;
+  color: var(--color-primary);
+  padding: 0.5rem 1.25rem;
   border-radius: var(--rounded-lg);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-bold);
   font-size: var(--text-sm);
   text-decoration: none;
   transition: all var(--transition-base);
+  white-space: nowrap;
 }
 
 .mini-cta .cta-button:hover {
-  background: var(--color-accent-dark);
+  background: #f0f0f0;
   transform: translateY(-1px);
 }
 
@@ -1783,6 +1807,15 @@ footer a:hover {
   margin-bottom: 2rem;
 }
 
+/* Consistent section alignment */
+.outcomes,
+.sessions {
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: var(--spacing-2xl) var(--spacing-lg);
+}
+
 .faq-section .section-header {
   margin-bottom: 2rem;
 }
@@ -1791,19 +1824,47 @@ footer a:hover {
   flex-direction: column;
   gap: 1.5rem;
 }
-.faq-item {
+details.faq-item {
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 0;
 }
-.faq-item h3 {
-  margin: 0 0 0.5rem;
+
+details.faq-item summary {
+  padding: 1.25rem 1.5rem;
   font-size: 1.05rem;
+  font-weight: 600;
   color: #022c25;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.faq-item p {
+
+details.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+details.faq-item summary::after {
+  content: '+';
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: #9ca3af;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 1rem;
+}
+
+details.faq-item[open] summary::after {
+  content: '−';
+  color: var(--color-accent);
+}
+
+details.faq-item p {
   margin: 0;
+  padding: 0 1.5rem 1.25rem;
   color: #4b5563;
   line-height: 1.6;
 }

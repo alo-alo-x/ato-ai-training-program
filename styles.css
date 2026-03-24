@@ -617,24 +617,26 @@ button, .btn {
   cursor: pointer;
   padding: 0;
   gap: var(--spacing-xs);
+  font-family: var(--font-heading);
 }
 
 .step-number {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
+  border: 2px solid var(--color-border);
+  background: var(--color-card);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: var(--font-weight-bold);
   font-size: var(--text-sm);
   color: var(--color-text-light);
-  background-color: var(--color-border);
   transition: all var(--transition-base);
-  font-family: var(--font-heading);
 }
 
 .step-dot.completed .step-number {
+  border-color: var(--color-success);
   background-color: var(--color-success);
   color: var(--color-card);
 }
@@ -670,32 +672,24 @@ button, .btn {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-lg);
-  margin-bottom: var(--spacing-2xl);
 }
 
 .session-card {
   background-color: var(--color-card);
+  border: 1px solid var(--color-border);
   border-radius: var(--rounded-xl);
   overflow: hidden;
-  box-shadow: var(--shadow-md);
-  transition: all var(--transition-base);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-base);
   display: flex;
-  flex-direction: row;
+  align-items: stretch;
 }
 
 .session-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-xl);
+  box-shadow: var(--shadow-lg);
 }
 
 /* Session Number Sidebar */
-.session-sidebar {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
 .session-number {
   width: 72px;
   min-height: 100%;
@@ -705,47 +699,40 @@ button, .btn {
   font-size: var(--text-2xl);
   font-weight: var(--font-weight-extrabold);
   color: var(--color-card);
-  text-align: center;
+  flex-shrink: 0;
 }
 
-/* Session number colors - gradient per session */
-.session-card:nth-child(1) .session-number {
-  background: linear-gradient(135deg, #022c25 0%, #044036 100%);
-}
+.session-number.s1 { background: #022c25; }
+.session-number.s2 { background: #053d33; }
+.session-number.s3 { background: #0a5c4e; }
+.session-number.s4 { background: #0d7a66; }
+.session-number.s5 { background: #10b98d; }
 
-.session-card:nth-child(2) .session-number {
-  background: linear-gradient(135deg, #053d33 0%, #065f46 100%);
-}
-
-.session-card:nth-child(3) .session-number {
-  background: linear-gradient(135deg, #0a5c4e 0%, #047857 100%);
-}
-
-.session-card:nth-child(4) .session-number {
-  background: linear-gradient(135deg, #0d7a66 0%, #059669 100%);
-}
-
-.session-card:nth-child(5) .session-number {
-  background: linear-gradient(135deg, #10b98d 0%, #34d399 100%);
-}
-
-/* Session Content */
-.session-content {
+/* Session Info */
+.session-info {
+  flex: 1;
   padding: var(--spacing-lg);
+}
+
+.session-meta {
   display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
-.session-card h3 {
+  align-items: center;
+  gap: var(--spacing-sm);
   margin-bottom: var(--spacing-sm);
-  color: var(--color-text);
 }
 
-.session-card .session-description {
-  color: var(--color-text-light);
+.session-title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-xs);
+  letter-spacing: -0.02em;
+}
+
+.session-desc {
   font-size: var(--text-sm);
-  margin-bottom: var(--spacing-md);
+  color: var(--color-text-light);
+  line-height: 1.6;
+  margin-bottom: var(--spacing-sm);
 }
 
 .session-meta {
@@ -956,7 +943,7 @@ button, .btn {
     font-size: var(--text-xl);
   }
 
-  .session-content {
+  .session-info {
     padding: var(--spacing-md);
   }
 }
